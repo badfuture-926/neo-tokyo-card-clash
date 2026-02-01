@@ -1,0 +1,3591 @@
+{
+  "Class": [
+    {
+      "value": "Hand of Citadel",
+      "count": 6,
+      "percentage": "0.24"
+    },
+    {
+      "value": "Slayer",
+      "count": 11,
+      "percentage": "0.45"
+    },
+    {
+      "value": "Day One Bitcoin Investor",
+      "count": 12,
+      "percentage": "0.49"
+    },
+    {
+      "value": "CEO",
+      "count": 15,
+      "percentage": "0.61"
+    },
+    {
+      "value": "Market Whale",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "Wraith",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "Assassin",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "Celebrity",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "Exectuive",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "Architect",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "NFT Artist",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "Cyber Ninja",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "Tech Weapon Dealer",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "Scavenger",
+      "count": 59,
+      "percentage": "2.41"
+    },
+    {
+      "value": "Corporate",
+      "count": 62,
+      "percentage": "2.53"
+    },
+    {
+      "value": "Chef",
+      "count": 62,
+      "percentage": "2.53"
+    },
+    {
+      "value": "Nerd",
+      "count": 65,
+      "percentage": "2.65"
+    },
+    {
+      "value": "Club Owner",
+      "count": 68,
+      "percentage": "2.77"
+    },
+    {
+      "value": "Samurai",
+      "count": 77,
+      "percentage": "3.14"
+    },
+    {
+      "value": "Club Promoter",
+      "count": 79,
+      "percentage": "3.22"
+    },
+    {
+      "value": "Mercenary",
+      "count": 80,
+      "percentage": "3.26"
+    },
+    {
+      "value": "Developer",
+      "count": 81,
+      "percentage": "3.30"
+    },
+    {
+      "value": "Punk",
+      "count": 82,
+      "percentage": "3.34"
+    },
+    {
+      "value": "Officer",
+      "count": 90,
+      "percentage": "3.67"
+    },
+    {
+      "value": "Cyberstreet Trader",
+      "count": 90,
+      "percentage": "3.67"
+    },
+    {
+      "value": "Tech Runner",
+      "count": 92,
+      "percentage": "3.75"
+    }
+  ],
+  "Race": [
+    {
+      "value": "Saint",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Destroyer",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Artificial Intelligence",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Survivor",
+      "count": 3,
+      "percentage": "0.12"
+    },
+    {
+      "value": "Phantom",
+      "count": 8,
+      "percentage": "0.33"
+    },
+    {
+      "value": "Aeon",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "Ghost",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "Demon",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "Albino",
+      "count": 103,
+      "percentage": "4.20"
+    }
+  ],
+  "Strength": [
+    {
+      "value": "100",
+      "count": 6,
+      "percentage": "0.24"
+    },
+    {
+      "value": "16",
+      "count": 14,
+      "percentage": "0.57"
+    },
+    {
+      "value": "65",
+      "count": 14,
+      "percentage": "0.57"
+    },
+    {
+      "value": "25",
+      "count": 15,
+      "percentage": "0.61"
+    },
+    {
+      "value": "38",
+      "count": 15,
+      "percentage": "0.61"
+    },
+    {
+      "value": "19",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "13",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "22",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "27",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "36",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "91",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "10",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "46",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "69",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "92",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "93",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "41",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "42",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "43",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "44",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "45",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "47",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "53",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "56",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "74",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "83",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "90",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "20",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "58",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "35",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "52",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "49",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "51",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "66",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "23",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "26",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "30",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "37",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "55",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "59",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "12",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "21",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "64",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "72",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "15",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "17",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "29",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "32",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "34",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "77",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "11",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "14",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "18",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "24",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "33",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "61",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "67",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "71",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "87",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "96",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "39",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "48",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "54",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "57",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "85",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "60",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "75",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "84",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "88",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "31",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "79",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "81",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "95",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "73",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "80",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "76",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "89",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "97",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "98",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "28",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "40",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "78",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "70",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "82",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "99",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "50",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "86",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "62",
+      "count": 41,
+      "percentage": "1.67"
+    },
+    {
+      "value": "68",
+      "count": 41,
+      "percentage": "1.67"
+    },
+    {
+      "value": "94",
+      "count": 43,
+      "percentage": "1.75"
+    },
+    {
+      "value": "63",
+      "count": 46,
+      "percentage": "1.88"
+    }
+  ],
+  "Intelligence": [
+    {
+      "value": "100",
+      "count": 6,
+      "percentage": "0.24"
+    },
+    {
+      "value": "40",
+      "count": 13,
+      "percentage": "0.53"
+    },
+    {
+      "value": "49",
+      "count": 13,
+      "percentage": "0.53"
+    },
+    {
+      "value": "18",
+      "count": 15,
+      "percentage": "0.61"
+    },
+    {
+      "value": "26",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "27",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "34",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "12",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "37",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "54",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "42",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "20",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "31",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "24",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "44",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "53",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "16",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "19",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "28",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "32",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "46",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "85",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "96",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "11",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "68",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "69",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "74",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "77",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "86",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "13",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "14",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "25",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "36",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "41",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "45",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "47",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "50",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "55",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "57",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "73",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "15",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "21",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "29",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "52",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "59",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "88",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "94",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "38",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "43",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "99",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "67",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "71",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "72",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "87",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "10",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "23",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "39",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "61",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "64",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "65",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "66",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "78",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "90",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "98",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "22",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "48",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "56",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "62",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "63",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "75",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "76",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "81",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "95",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "92",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "93",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "70",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "79",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "33",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "51",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "17",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "91",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "80",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "58",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "82",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "97",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "35",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "30",
+      "count": 45,
+      "percentage": "1.84"
+    },
+    {
+      "value": "60",
+      "count": 45,
+      "percentage": "1.84"
+    },
+    {
+      "value": "83",
+      "count": 45,
+      "percentage": "1.84"
+    },
+    {
+      "value": "84",
+      "count": 50,
+      "percentage": "2.04"
+    },
+    {
+      "value": "89",
+      "count": 54,
+      "percentage": "2.20"
+    }
+  ],
+  "Attractiveness": [
+    {
+      "value": "100",
+      "count": 6,
+      "percentage": "0.24"
+    },
+    {
+      "value": "17",
+      "count": 14,
+      "percentage": "0.57"
+    },
+    {
+      "value": "19",
+      "count": 14,
+      "percentage": "0.57"
+    },
+    {
+      "value": "49",
+      "count": 14,
+      "percentage": "0.57"
+    },
+    {
+      "value": "11",
+      "count": 15,
+      "percentage": "0.61"
+    },
+    {
+      "value": "18",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "23",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "26",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "37",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "39",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "53",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "64",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "41",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "46",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "70",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "78",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "10",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "40",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "67",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "72",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "47",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "61",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "96",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "13",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "22",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "29",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "59",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "60",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "87",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "12",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "45",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "16",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "25",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "51",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "63",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "69",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "94",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "14",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "15",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "33",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "36",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "55",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "71",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "82",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "27",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "35",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "65",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "68",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "75",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "30",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "31",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "32",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "52",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "21",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "54",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "66",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "24",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "34",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "57",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "86",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "92",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "95",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "20",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "42",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "48",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "50",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "74",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "76",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "77",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "98",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "28",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "43",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "44",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "79",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "90",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "62",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "85",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "97",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "81",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "89",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "91",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "38",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "56",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "58",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "84",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "80",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "83",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "93",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "99",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "73",
+      "count": 40,
+      "percentage": "1.63"
+    },
+    {
+      "value": "88",
+      "count": 49,
+      "percentage": "2.00"
+    }
+  ],
+  "Tech Skill": [
+    {
+      "value": "100",
+      "count": 6,
+      "percentage": "0.24"
+    },
+    {
+      "value": "46",
+      "count": 12,
+      "percentage": "0.49"
+    },
+    {
+      "value": "37",
+      "count": 14,
+      "percentage": "0.57"
+    },
+    {
+      "value": "29",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "39",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "26",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "31",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "38",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "43",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "10",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "18",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "35",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "17",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "24",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "63",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "64",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "21",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "28",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "32",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "54",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "82",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "33",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "51",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "52",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "68",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "83",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "25",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "34",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "36",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "42",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "61",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "99",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "13",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "30",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "55",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "72",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "87",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "15",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "47",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "48",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "50",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "88",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "12",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "23",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "67",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "93",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "20",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "27",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "62",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "81",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "16",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "44",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "58",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "69",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "75",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "77",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "19",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "45",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "49",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "57",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "70",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "73",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "60",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "66",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "92",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "14",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "40",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "59",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "78",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "98",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "56",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "84",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "85",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "11",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "65",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "22",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "74",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "97",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "89",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "91",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "71",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "79",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "80",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "94",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "53",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "76",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "90",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "41",
+      "count": 41,
+      "percentage": "1.67"
+    },
+    {
+      "value": "96",
+      "count": 42,
+      "percentage": "1.71"
+    },
+    {
+      "value": "95",
+      "count": 43,
+      "percentage": "1.75"
+    },
+    {
+      "value": "86",
+      "count": 46,
+      "percentage": "1.88"
+    }
+  ],
+  "Cool": [
+    {
+      "value": "100",
+      "count": 6,
+      "percentage": "0.24"
+    },
+    {
+      "value": "21",
+      "count": 13,
+      "percentage": "0.53"
+    },
+    {
+      "value": "42",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "16",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "65",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "11",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "14",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "39",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "57",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "18",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "43",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "79",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "31",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "32",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "45",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "54",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "12",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "26",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "33",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "37",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "49",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "20",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "51",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "58",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "62",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "23",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "29",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "41",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "69",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "89",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "36",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "44",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "48",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "76",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "17",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "30",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "38",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "59",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "88",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "27",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "52",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "56",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "61",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "95",
+      "count": 26,
+      "percentage": "1.06"
+    },
+    {
+      "value": "13",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "63",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "64",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "67",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "74",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "83",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "86",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "91",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "22",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "35",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "66",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "80",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "82",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "19",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "70",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "15",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "46",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "55",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "72",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "93",
+      "count": 30,
+      "percentage": "1.22"
+    },
+    {
+      "value": "10",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "28",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "78",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "84",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "92",
+      "count": 31,
+      "percentage": "1.26"
+    },
+    {
+      "value": "24",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "34",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "47",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "50",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "90",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "60",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "94",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "40",
+      "count": 35,
+      "percentage": "1.43"
+    },
+    {
+      "value": "77",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "87",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "25",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "71",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "73",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "96",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "53",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "68",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "75",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "85",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "97",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "99",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "81",
+      "count": 40,
+      "percentage": "1.63"
+    },
+    {
+      "value": "98",
+      "count": 41,
+      "percentage": "1.67"
+    }
+  ],
+  "Eyes": [
+    {
+      "value": "Angelic",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Cybernetic Optics",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Augmented Visor",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Laser Eyes",
+      "count": 9,
+      "percentage": "0.37"
+    },
+    {
+      "value": "Demon Eyes",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "Glowing",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "Cyborg",
+      "count": 89,
+      "percentage": "3.63"
+    },
+    {
+      "value": "Robot",
+      "count": 89,
+      "percentage": "3.63"
+    },
+    {
+      "value": "Alien",
+      "count": 109,
+      "percentage": "4.45"
+    }
+  ],
+  "Ability": [
+    {
+      "value": "Bless",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Carnage",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Deception",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Invest",
+      "count": 3,
+      "percentage": "0.12"
+    },
+    {
+      "value": "Ghost Walk",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "Revive",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "Locksmith",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "Athele",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "Dense",
+      "count": 29,
+      "percentage": "1.18"
+    },
+    {
+      "value": "Weapon Check",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "Dead Eye",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "Shield",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "Hard Gut",
+      "count": 45,
+      "percentage": "1.84"
+    }
+  ],
+  "Location": [
+    {
+      "value": "Omnipresent",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "Citadel Penthouse",
+      "count": 40,
+      "percentage": "1.63"
+    },
+    {
+      "value": "Citadel Tower",
+      "count": 68,
+      "percentage": "2.77"
+    }
+  ],
+  "Additional Item": [
+    {
+      "value": "Katanas",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Neural Net",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Golden Bitcoin Skull of Fate",
+      "count": 13,
+      "percentage": "0.53"
+    },
+    {
+      "value": "Cyber Penguin",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "Nuclear Bomb",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "1 Bitcoin",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "Cheat Codes",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "Cyber Hamster",
+      "count": 27,
+      "percentage": "1.10"
+    },
+    {
+      "value": "Cyber Dog",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "Gold Cake",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "Cyber Cat",
+      "count": 43,
+      "percentage": "1.75"
+    },
+    {
+      "value": "1 Dogecoin",
+      "count": 46,
+      "percentage": "1.88"
+    },
+    {
+      "value": "Knife",
+      "count": 52,
+      "percentage": "2.12"
+    },
+    {
+      "value": "Sushi Roll",
+      "count": 59,
+      "percentage": "2.41"
+    },
+    {
+      "value": "Cup of Scotch",
+      "count": 63,
+      "percentage": "2.57"
+    },
+    {
+      "value": "Pocket Knife",
+      "count": 68,
+      "percentage": "2.77"
+    },
+    {
+      "value": "1st Edition Book",
+      "count": 71,
+      "percentage": "2.90"
+    },
+    {
+      "value": "Newspaper",
+      "count": 82,
+      "percentage": "3.34"
+    },
+    {
+      "value": "Sandwich",
+      "count": 100,
+      "percentage": "4.08"
+    },
+    {
+      "value": "Trash Basket",
+      "count": 103,
+      "percentage": "4.20"
+    },
+    {
+      "value": "Book",
+      "count": 103,
+      "percentage": "4.20"
+    },
+    {
+      "value": "Wooden Cup",
+      "count": 111,
+      "percentage": "4.53"
+    }
+  ],
+  "Weapon": [
+    {
+      "value": "Gravity Gun",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Sword of Masters",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "BFG 9000",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Blades of Chaos",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Mini Gun",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "01000011 01101111 01100100 01100101",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Energy Sword",
+      "count": 2,
+      "percentage": "0.08"
+    },
+    {
+      "value": "Buster Sword",
+      "count": 2,
+      "percentage": "0.08"
+    },
+    {
+      "value": "Golden Hilt Red Light Saber",
+      "count": 2,
+      "percentage": "0.08"
+    },
+    {
+      "value": "Golden Magnum",
+      "count": 3,
+      "percentage": "0.12"
+    },
+    {
+      "value": "50 Cal Magnum",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "Minigun",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "Cyber Katana",
+      "count": 41,
+      "percentage": "1.67"
+    },
+    {
+      "value": "Golden Sock",
+      "count": 42,
+      "percentage": "1.71"
+    },
+    {
+      "value": "Charge Blade",
+      "count": 43,
+      "percentage": "1.75"
+    },
+    {
+      "value": "Plasma Rifle",
+      "count": 49,
+      "percentage": "2.00"
+    },
+    {
+      "value": "Missile Launcher",
+      "count": 50,
+      "percentage": "2.04"
+    },
+    {
+      "value": "Light Saber",
+      "count": 54,
+      "percentage": "2.20"
+    },
+    {
+      "value": "Super Shotgun",
+      "count": 71,
+      "percentage": "2.90"
+    },
+    {
+      "value": "Pistol",
+      "count": 82,
+      "percentage": "3.34"
+    },
+    {
+      "value": "Sword",
+      "count": 82,
+      "percentage": "3.34"
+    },
+    {
+      "value": "Rifle",
+      "count": 85,
+      "percentage": "3.47"
+    },
+    {
+      "value": "Shield",
+      "count": 90,
+      "percentage": "3.67"
+    },
+    {
+      "value": "Brass Knuckles",
+      "count": 104,
+      "percentage": "4.24"
+    },
+    {
+      "value": "Taser",
+      "count": 110,
+      "percentage": "4.49"
+    },
+    {
+      "value": "Pocket Knife",
+      "count": 119,
+      "percentage": "4.85"
+    },
+    {
+      "value": "Rolled Up Newspaper",
+      "count": 121,
+      "percentage": "4.93"
+    }
+  ],
+  "Vehicle": [
+    {
+      "value": "War Rig",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Fiberoptic",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Gamborghini",
+      "count": 39,
+      "percentage": "1.59"
+    },
+    {
+      "value": "Jet Pack",
+      "count": 41,
+      "percentage": "1.67"
+    },
+    {
+      "value": "Epic Mount",
+      "count": 41,
+      "percentage": "1.67"
+    },
+    {
+      "value": "Cyber Bike",
+      "count": 48,
+      "percentage": "1.96"
+    },
+    {
+      "value": "Car 2",
+      "count": 51,
+      "percentage": "2.08"
+    },
+    {
+      "value": "Hover Car",
+      "count": 52,
+      "percentage": "2.12"
+    },
+    {
+      "value": "Cyber Car 1",
+      "count": 54,
+      "percentage": "2.20"
+    },
+    {
+      "value": "Cyber Car 3",
+      "count": 56,
+      "percentage": "2.28"
+    },
+    {
+      "value": "Cyber Car 2",
+      "count": 56,
+      "percentage": "2.28"
+    },
+    {
+      "value": "Car 4",
+      "count": 60,
+      "percentage": "2.45"
+    },
+    {
+      "value": "Car 5",
+      "count": 61,
+      "percentage": "2.49"
+    },
+    {
+      "value": "Car 3",
+      "count": 69,
+      "percentage": "2.81"
+    },
+    {
+      "value": "Car 1",
+      "count": 71,
+      "percentage": "2.90"
+    },
+    {
+      "value": "Car 6",
+      "count": 86,
+      "percentage": "3.51"
+    }
+  ],
+  "Apparel": [
+    {
+      "value": "Tri-Angle Hero",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Doom Man",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Super Italian Guy",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Saint Armor",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Ichigo",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Samson",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Black Tie",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Devil 1",
+      "count": 2,
+      "percentage": "0.08"
+    },
+    {
+      "value": "Chief Master",
+      "count": 2,
+      "percentage": "0.08"
+    },
+    {
+      "value": "Dark Space Wizard",
+      "count": 2,
+      "percentage": "0.08"
+    },
+    {
+      "value": "Angel 3",
+      "count": 3,
+      "percentage": "0.12"
+    },
+    {
+      "value": "Byte Suit",
+      "count": 3,
+      "percentage": "0.12"
+    },
+    {
+      "value": "Devil 2",
+      "count": 6,
+      "percentage": "0.24"
+    },
+    {
+      "value": "Angel 2",
+      "count": 7,
+      "percentage": "0.29"
+    },
+    {
+      "value": "Devil 3",
+      "count": 7,
+      "percentage": "0.29"
+    },
+    {
+      "value": "Angel 1",
+      "count": 9,
+      "percentage": "0.37"
+    },
+    {
+      "value": "No Skin",
+      "count": 11,
+      "percentage": "0.45"
+    },
+    {
+      "value": "Angel with Wings",
+      "count": 13,
+      "percentage": "0.53"
+    },
+    {
+      "value": "Ape",
+      "count": 13,
+      "percentage": "0.53"
+    },
+    {
+      "value": "Space Suit",
+      "count": 14,
+      "percentage": "0.57"
+    },
+    {
+      "value": "Demon Suit",
+      "count": 15,
+      "percentage": "0.61"
+    },
+    {
+      "value": "Giant Mech",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "Power Suit",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "Translucent",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "Neo Armor",
+      "count": 21,
+      "percentage": "0.86"
+    },
+    {
+      "value": "Onesie",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "Akira Jacket",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "Mecha Ninja",
+      "count": 22,
+      "percentage": "0.90"
+    },
+    {
+      "value": "Zombie Robot",
+      "count": 28,
+      "percentage": "1.14"
+    },
+    {
+      "value": "Cyber Samurai",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "Cyber Suit",
+      "count": 32,
+      "percentage": "1.31"
+    },
+    {
+      "value": "School",
+      "count": 46,
+      "percentage": "1.88"
+    },
+    {
+      "value": "Kimono",
+      "count": 48,
+      "percentage": "1.96"
+    },
+    {
+      "value": "Suit 3",
+      "count": 60,
+      "percentage": "2.45"
+    },
+    {
+      "value": "Bar Outfit 3",
+      "count": 61,
+      "percentage": "2.49"
+    },
+    {
+      "value": "Hoodie 1",
+      "count": 62,
+      "percentage": "2.53"
+    },
+    {
+      "value": "Suit 1",
+      "count": 63,
+      "percentage": "2.57"
+    },
+    {
+      "value": "Hoodie 2",
+      "count": 64,
+      "percentage": "2.61"
+    },
+    {
+      "value": "Rave",
+      "count": 64,
+      "percentage": "2.61"
+    },
+    {
+      "value": "No Shirt",
+      "count": 66,
+      "percentage": "2.69"
+    },
+    {
+      "value": "Rave Hoodie",
+      "count": 69,
+      "percentage": "2.81"
+    },
+    {
+      "value": "Hoodie 3",
+      "count": 69,
+      "percentage": "2.81"
+    },
+    {
+      "value": "Scavenger 3",
+      "count": 71,
+      "percentage": "2.90"
+    },
+    {
+      "value": "Armor",
+      "count": 71,
+      "percentage": "2.90"
+    },
+    {
+      "value": "Service",
+      "count": 71,
+      "percentage": "2.90"
+    },
+    {
+      "value": "Ninja Garb",
+      "count": 72,
+      "percentage": "2.94"
+    },
+    {
+      "value": "Work Clothes 3",
+      "count": 73,
+      "percentage": "2.98"
+    },
+    {
+      "value": "Hawaiian",
+      "count": 74,
+      "percentage": "3.02"
+    },
+    {
+      "value": "Scavenger 1",
+      "count": 75,
+      "percentage": "3.06"
+    },
+    {
+      "value": "Suit 2",
+      "count": 76,
+      "percentage": "3.10"
+    },
+    {
+      "value": "Work Clothes 1",
+      "count": 78,
+      "percentage": "3.18"
+    },
+    {
+      "value": "Work Clothes 2",
+      "count": 79,
+      "percentage": "3.22"
+    },
+    {
+      "value": "Grunt 1",
+      "count": 81,
+      "percentage": "3.30"
+    },
+    {
+      "value": "Scavenger 2",
+      "count": 81,
+      "percentage": "3.30"
+    },
+    {
+      "value": "Bar Outfit 1",
+      "count": 84,
+      "percentage": "3.43"
+    },
+    {
+      "value": "Tee Shirt 2",
+      "count": 85,
+      "percentage": "3.47"
+    },
+    {
+      "value": "Grunt 2",
+      "count": 88,
+      "percentage": "3.59"
+    },
+    {
+      "value": "Tee Shirt 3",
+      "count": 88,
+      "percentage": "3.59"
+    },
+    {
+      "value": "Bar Outfit 2",
+      "count": 90,
+      "percentage": "3.67"
+    },
+    {
+      "value": "Tee Shirt 1",
+      "count": 95,
+      "percentage": "3.87"
+    }
+  ],
+  "Helm": [
+    {
+      "value": "Tri-Angle Hero",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Doom Man",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Super Italian Guy",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Saint Helm",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Ichigo",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Mecha Mask",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Dystopian Devil",
+      "count": 1,
+      "percentage": "0.04"
+    },
+    {
+      "value": "Devil 1",
+      "count": 2,
+      "percentage": "0.08"
+    },
+    {
+      "value": "Chief Master",
+      "count": 2,
+      "percentage": "0.08"
+    },
+    {
+      "value": "Dark Space Wizard",
+      "count": 2,
+      "percentage": "0.08"
+    },
+    {
+      "value": "Angel 3",
+      "count": 3,
+      "percentage": "0.12"
+    },
+    {
+      "value": "Electric Tiger Helm",
+      "count": 3,
+      "percentage": "0.12"
+    },
+    {
+      "value": "Devil 2",
+      "count": 6,
+      "percentage": "0.24"
+    },
+    {
+      "value": "Angel 2",
+      "count": 7,
+      "percentage": "0.29"
+    },
+    {
+      "value": "Devil 3",
+      "count": 7,
+      "percentage": "0.29"
+    },
+    {
+      "value": "Skull",
+      "count": 8,
+      "percentage": "0.33"
+    },
+    {
+      "value": "Angel 1",
+      "count": 9,
+      "percentage": "0.37"
+    },
+    {
+      "value": "Ghost Robot",
+      "count": 11,
+      "percentage": "0.45"
+    },
+    {
+      "value": "Electric Helm",
+      "count": 12,
+      "percentage": "0.49"
+    },
+    {
+      "value": "Ape Helm",
+      "count": 13,
+      "percentage": "0.53"
+    },
+    {
+      "value": "Luxury Robot",
+      "count": 15,
+      "percentage": "0.61"
+    },
+    {
+      "value": "Dwemer Robot",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "Gold Skull",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "Fire Helm",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "Water Helm",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "Giant Mech",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "Diamond Multi Color Samurai",
+      "count": 18,
+      "percentage": "0.73"
+    },
+    {
+      "value": "Laser Eyes",
+      "count": 19,
+      "percentage": "0.77"
+    },
+    {
+      "value": "Ice Helm",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "Demon",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "Bored Ape",
+      "count": 20,
+      "percentage": "0.82"
+    },
+    {
+      "value": "Zombie Robot",
+      "count": 23,
+      "percentage": "0.94"
+    },
+    {
+      "value": "Samurai Mask",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "Gold Robot",
+      "count": 25,
+      "percentage": "1.02"
+    },
+    {
+      "value": "VIP Robot Head",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "Pilot Helm",
+      "count": 34,
+      "percentage": "1.39"
+    },
+    {
+      "value": "DJ Helm",
+      "count": 36,
+      "percentage": "1.47"
+    },
+    {
+      "value": "Beer Hat helm",
+      "count": 37,
+      "percentage": "1.51"
+    },
+    {
+      "value": "Shark Helm",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "Soldier 1",
+      "count": 38,
+      "percentage": "1.55"
+    },
+    {
+      "value": "Blitz Ball Player",
+      "count": 42,
+      "percentage": "1.71"
+    },
+    {
+      "value": "Crypto Punk",
+      "count": 43,
+      "percentage": "1.75"
+    },
+    {
+      "value": "Soldier 2",
+      "count": 47,
+      "percentage": "1.92"
+    },
+    {
+      "value": "Cyber Football 1",
+      "count": 50,
+      "percentage": "2.04"
+    },
+    {
+      "value": "Middle Class Helm 1",
+      "count": 52,
+      "percentage": "2.12"
+    },
+    {
+      "value": "Medieval",
+      "count": 52,
+      "percentage": "2.12"
+    },
+    {
+      "value": "Cyber Football 2",
+      "count": 52,
+      "percentage": "2.12"
+    },
+    {
+      "value": "Middle Class Helm 2",
+      "count": 54,
+      "percentage": "2.20"
+    },
+    {
+      "value": "Rave Helmet 2",
+      "count": 64,
+      "percentage": "2.61"
+    },
+    {
+      "value": "Rave Helmet 1",
+      "count": 65,
+      "percentage": "2.65"
+    },
+    {
+      "value": "Robot Head",
+      "count": 69,
+      "percentage": "2.81"
+    },
+    {
+      "value": "Blitz Ball Fan Helmet 2",
+      "count": 71,
+      "percentage": "2.90"
+    },
+    {
+      "value": "Blitz Ball Fan Helmet 1",
+      "count": 73,
+      "percentage": "2.98"
+    },
+    {
+      "value": "Construction Helmet",
+      "count": 76,
+      "percentage": "3.10"
+    },
+    {
+      "value": "Trash Helmet",
+      "count": 88,
+      "percentage": "3.59"
+    },
+    {
+      "value": "Gas Mask",
+      "count": 91,
+      "percentage": "3.71"
+    },
+    {
+      "value": "Typical Cyber Helm 1",
+      "count": 93,
+      "percentage": "3.79"
+    },
+    {
+      "value": "Typical Cyber Helm 2",
+      "count": 97,
+      "percentage": "3.96"
+    },
+    {
+      "value": "Business Helmet 1",
+      "count": 100,
+      "percentage": "4.08"
+    },
+    {
+      "value": "VR Visor",
+      "count": 106,
+      "percentage": "4.32"
+    },
+    {
+      "value": "Typical Cyber Helm 3",
+      "count": 115,
+      "percentage": "4.69"
+    },
+    {
+      "value": "Business Helmet 3",
+      "count": 121,
+      "percentage": "4.93"
+    }
+  ],
+  "Reward Rate": [
+    {
+      "value": "11",
+      "count": 11,
+      "percentage": "0.45"
+    },
+    {
+      "value": "9",
+      "count": 13,
+      "percentage": "0.53"
+    },
+    {
+      "value": "15",
+      "count": 16,
+      "percentage": "0.65"
+    },
+    {
+      "value": "12",
+      "count": 17,
+      "percentage": "0.69"
+    },
+    {
+      "value": "10",
+      "count": 24,
+      "percentage": "0.98"
+    },
+    {
+      "value": "13",
+      "count": 33,
+      "percentage": "1.35"
+    },
+    {
+      "value": "8",
+      "count": 66,
+      "percentage": "2.69"
+    },
+    {
+      "value": "1",
+      "count": 102,
+      "percentage": "4.16"
+    }
+  ],
+  "Gender": [
+    {
+      "value": "Female",
+      "count": 46,
+      "percentage": "1.88"
+    }
+  ]
+}
