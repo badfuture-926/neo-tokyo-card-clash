@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+}
+
+.neon-glow-strong {
+    color: #22d3ee !important;           /* cyan-400 – keeps good readable color */
+    text-shadow: 
+      0 0 10px #22d3ee,
+      0 0 25px #22d3ee,
+      0 0 50px #06b6d4,
+      0 0 100px #0891b2,
+      0 0 180px rgba(8, 145, 178, 0.8),
+      0 0 280px rgba(8, 145, 178, 0.6) !important;
+  }
