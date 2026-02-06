@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'   // ← add this line
 
+// ✅ base must match your GitHub Pages repo path
 export default defineConfig({
-  plugins: [react(), tailwindcss()],   // ← add tailwindcss() here
+  base: '/neo-tokyo-card-clash/',
+  plugins: [react()],
 })

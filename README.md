@@ -71,5 +71,5 @@ export default defineConfig([
   },
 ])
 ```
-=======
+
 # neo-tokyo-card-clash

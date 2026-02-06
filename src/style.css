@@ -1,20 +1,307 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background-color: black;
+/* Custom styles */
+body {
+  @apply bg-black text-white;
+  overflow-x: hidden;
 }
 
+
+
+/* Neon glow example */
 .neon-glow-strong {
-    color: #22d3ee !important;           /* cyan-400 – keeps good readable color */
-    text-shadow: 
-      0 0 10px #22d3ee,
-      0 0 25px #22d3ee,
-      0 0 50px #06b6d4,
-      0 0 100px #0891b2,
-      0 0 180px rgba(8, 145, 178, 0.8),
-      0 0 280px rgba(8, 145, 178, 0.6) !important;
+  color: #22d3ee !important;
+  text-shadow:
+    0 0 10px #22d3ee,
+    0 0 20px #22d3ee,
+    0 0 40px #06b6d4;
+}
+
+/* Premium Button Effect */
+.btn-premium {
+  position: relative;
+  overflow: hidden;
+  /* NEO Gradient: Light Blue to Deep Blue */
+  background: linear-gradient(to bottom, #4AC0E8 0%, #007AFF 100%);
+  box-shadow:
+    0 4px 15px rgba(0, 122, 255, 0.4),
+    0 0 20px rgba(74, 192, 232, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(74, 192, 232, 0.6);
+  transition: all 0.3s ease;
+}
+
+.btn-premium * {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-premium::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.3) 50%,
+      transparent 70%);
+  transform: rotate(45deg);
+  animation: shine 3s infinite;
+  z-index: 0;
+}
+
+.btn-premium:hover {
+  box-shadow:
+    0 6px 25px rgba(0, 122, 255, 0.6),
+    0 0 30px rgba(74, 192, 232, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* --- DESIGN SYSTEM TOKENS --- */
+
+/* Custom Color Palette - Neo Blue */
+.text-neo-blue {
+  color: #0090ff;
+}
+
+.bg-neo-blue {
+  background-color: #0090ff;
+}
+
+.border-neo-blue {
+  border-color: #0090ff;
+}
+
+.shadow-neo-blue {
+  --tw-shadow-color: #0090ff;
+}
+
+/* Typography */
+.type-display {
+  @apply text-6xl font-black tracking-tighter italic;
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.05em;
+}
+
+.type-title {
+  @apply text-2xl font-bold tracking-tight uppercase;
+  letter-spacing: 0.05em;
+}
+
+.type-body {
+  @apply text-sm font-medium leading-relaxed text-gray-300;
+}
+
+.type-meta {
+  @apply text-[10px] font-bold uppercase tracking-[0.2em] text-neo-blue;
+}
+
+/* Game Mode Buttons */
+.btn-mode {
+  @apply relative flex flex-col items-start justify-center p-8 w-full transition-all duration-300 overflow-hidden;
+  background: rgba(10, 10, 10, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  /* Radius-Standard */
+  backdrop-filter: blur(12px);
+}
+
+.btn-mode:hover {
+  background: rgba(20, 20, 20, 0.8);
+  border-color: rgba(0, 144, 255, 0.5);
+  /* Stroke-NeoBlue */
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.btn-mode::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: transparent;
+  transition: background 0.3s ease;
+}
+
+.btn-mode:hover::before {
+  background: #0090ff;
+}
+
+/* Variant Accents */
+.btn-mode-purple:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+}
+
+.btn-mode-purple:hover::before {
+  background: #a855f7;
+}
+
+.btn-mode-blue:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.btn-mode-blue:hover::before {
+  background: #3b82f6;
+}
+
+.btn-mode-red:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.btn-mode-red:hover::before {
+  background: #ef4444;
+}
+
+.btn-mode-orange:hover {
+  border-color: rgba(249, 115, 22, 0.5);
+}
+
+.btn-mode-orange:hover::before {
+  background: #f97316;
+}
+
+
+/* Loading Animation - System Init */
+.loader-crate {
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(0, 144, 255, 0.3);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: spin-slow 10s linear infinite;
+}
+
+.loader-core {
+  width: 30px;
+  height: 30px;
+  background: #0090ff;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  animation: pulse-fast 1s ease-in-out infinite alternate;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
   }
+}
+
+@keyframes pulse-fast {
+  from {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+/* Battle HUD - Precision Status Area */
+
+
+/* Command Deck - Action Tray */
+.command-deck-tray {
+  position: fixed;
+  bottom: 11rem;
+  /* Locked above the hand */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(12px);
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 100;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.action-btn {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: #0a0a0a;
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.action-btn:hover {
+  border-color: #06b6d4;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+  transform: translateY(-4px) scale(1.05);
+}
+
+.action-btn .btn-label {
+  position: absolute;
+  bottom: 4.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #06b6d4;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  background: rgba(10, 10, 10, 0.95);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  pointer-events: none;
+  font-size: 0.7rem;
+}
+
+.action-btn:hover .btn-label {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.action-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Red variant for discard buttons */
+.btn-premium-red {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 50%, #7f1d1d 100%);
+  box-shadow:
+    0 4px 15px rgba(220, 38, 38, 0.4),
+    0 0 20px rgba(220, 38, 38, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.btn-premium-red:hover {
+  box-shadow:
+    0 6px 25px rgba(220, 38, 38, 0.6),
+    0 0 30px rgba(220, 38, 38, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
