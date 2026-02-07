@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './style.css'
 import { isRareTrait, isUltraRareTrait, getTraitCount } from './rareTraits'
+import traitScores from './assets/traitScores.json'
 
 interface CitizenCard {
   id: number
@@ -26,12 +27,27 @@ interface CitizenTraits {
   rewardRate: string
 }
 
+interface CardTraitScores {
+  race: number
+  class: number
+  eyes: number
+  ability: number
+  additionalItem: number
+  helm: number
+  location: number
+  vehicle: number
+  apparel: number
+  rewardRate: number
+  weapon: number
+  strength: number
+}
+
 function App() {
   const [gameStarted, setGameStarted] = useState(false)
   const [showRules, setShowRules] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [showGameModes, setShowGameModes] = useState(false)
-  const [gameMode, setGameMode] = useState<'omnipresent' | 'chaotic' | 'threat-intelligence' | 'last-citizen-standing' | null>(null)
+  const [gameMode, setGameMode] = useState<'omnipresent' | 'chaotic' | 'threat-intelligence' | 'last-citizen-standing' | 'interlinked' | null>(null)
   const [citizens, setCitizens] = useState<CitizenCard[]>([])
   const [citizenTraits, setCitizenTraits] = useState<Record<number, CitizenTraits>>({})
 
@@ -71,6 +87,24 @@ function App() {
         { label: 'Tech Skill', value: 'techSkill', key: 'Tech Skill' },
         { label: 'Attractiveness', value: 'attractiveness', key: 'Attractiveness' },
         { label: 'Reward', value: 'rewardRate', key: 'Reward Rate' }
+      ]
+    }
+
+    if (gameMode === 'interlinked') {
+      // INTERLINKED mode: 12 traits (same as Chaotic/Threat Intel)
+      return [
+        { label: 'Race', value: 'race', key: 'Race' },
+        { label: 'Class', value: 'class', key: 'Class' },
+        { label: 'Eyes', value: 'eyes', key: 'Eyes' },
+        { label: 'Ability', value: 'ability', key: 'Ability' },
+        { label: 'Item', value: 'additionalItem', key: 'Additional Item' },
+        { label: 'Helm', value: 'helm', key: 'Helm' },
+        { label: 'Location', value: 'location', key: 'Location' },
+        { label: 'Vehicle', value: 'vehicle', key: 'Vehicle' },
+        { label: 'Apparel', value: 'apparel', key: 'Apparel' },
+        { label: 'Reward', value: 'rewardRate', key: 'Reward Rate' },
+        { label: 'Weapon', value: 'weapon', key: 'Weapon' },
+        { label: 'Strength', value: 'strength', key: 'Strength' }
       ]
     }
 
@@ -143,10 +177,16 @@ function App() {
   const [showBattleAnimation, setShowBattleAnimation] = useState(false)
   const [gameOver, setGameOver] = useState<'win' | 'lose' | null>(null)
 
+  // Interlinked Battle Log
+  const [battleLog, setBattleLog] = useState<{ trait: string, pVal: number | string, oVal: number | string, winner: 'player' | 'opponent' | 'tie' }[] | null>(null)
+  const [showBattleReport, setShowBattleReport] = useState(false)
+  const [reportTimer, setReportTimer] = useState(10)
+
   // Phase 5: Turn counter and refresh
   const [turnCount, setTurnCount] = useState(0)
   const [isRefreshPhase, setIsRefreshPhase] = useState(false)
   const [refreshDrawnCard, setRefreshDrawnCard] = useState<number | null>(null)
+  const [aiRefreshDrawnCard, setAiRefreshDrawnCard] = useState<number | null>(null)
   const [lastRefreshCard, setLastRefreshCard] = useState<number | null>(null) // Track last refresh card to protect from elimination
   const [playerRefreshDiscarded, setPlayerRefreshDiscarded] = useState(false)
   const [aiRefreshDiscarded, setAiRefreshDiscarded] = useState(false)
@@ -163,6 +203,9 @@ function App() {
   const [hoveredDeckCard, setHoveredDeckCard] = useState<number | null>(null)
   const [showSpecialAbilityInfo, setShowSpecialAbilityInfo] = useState<string | null>(null)
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null) // For sticky hover delay
+
+  // INTERLINKED mode: Track trait scores for each card
+  const [cardTraitScores, setCardTraitScores] = useState<Record<number, CardTraitScores>>({})
 
   // Keyboard navigation for Target Inspection Modal
   useEffect(() => {
@@ -216,7 +259,7 @@ function App() {
     setShowGameModes(true)
   }
 
-  const startGameWithMode = (mode: 'omnipresent' | 'chaotic' | 'threat-intelligence' | 'last-citizen-standing') => {
+  const startGameWithMode = (mode: 'omnipresent' | 'chaotic' | 'threat-intelligence' | 'last-citizen-standing' | 'interlinked') => {
     setGameMode(mode)
     setShowGameModes(false)
     setIsLoading(true)
@@ -266,36 +309,48 @@ function App() {
   const validCitizens = citizens.filter(c => c.loaded)
 
   const handleDiscard = () => {
-    if (selectedForDiscard && !discardedCards.includes(selectedForDiscard)) {
-      if (isRefreshPhase) {
-        // Refresh Phase specific discard logic
-        console.log(`[DEBUG] handleDiscard (Refresh) - Selected: ${selectedForDiscard}, New Card: ${refreshDrawnCard}`)
-        console.log(`[DEBUG] refreshDrawnCard value:`, refreshDrawnCard)
-        console.log(`[DEBUG] refreshDrawnCard type:`, typeof refreshDrawnCard)
+    if (!selectedForDiscard) return;
 
-        setPlayerDeck(prev => {
-          console.log(`[DEBUG] Inside setPlayerDeck - prev:`, prev)
-          console.log(`[DEBUG] Inside setPlayerDeck - refreshDrawnCard:`, refreshDrawnCard)
-          const filtered = prev.filter(id => id !== selectedForDiscard)
-          console.log(`[DEBUG] After filter - filtered:`, filtered)
-          const newDeck = refreshDrawnCard ? [...filtered, refreshDrawnCard as number] : filtered
-          console.log(`[DEBUG] Deck - Before: ${prev.length}, Filtered: ${filtered.length}, NewCard: ${refreshDrawnCard}, Final: ${newDeck.length}`)
-          console.log(`[DEBUG] Final newDeck:`, newDeck)
-          return newDeck
-        })
+    if (isRefreshPhase) {
+      // Refresh Phase specific discard logic
+      console.log(`[DEBUG] handleDiscard (Refresh) - Removing selected card: ${selectedForDiscard}`)
 
-        // Protect the new card from elimination
-        if (refreshDrawnCard) {
-          setLastRefreshCard(refreshDrawnCard)
+      // Update player deck: Double-verify Draw immersion
+      setPlayerDeck((prev: number[]) => {
+        const normalizedSelected = Number(selectedForDiscard)
+        const currentRefreshed = Number(refreshDrawnCard)
+
+        // 1. Remove selected
+        let list = prev.filter(id => Number(id) !== normalizedSelected).map(id => Number(id))
+
+        // 2. ABSOLUTE REDUNDANCY: Force the Refresh card into index 0 if missing
+        if (currentRefreshed && !list.includes(currentRefreshed)) {
+          console.log(`[DEBUG] Redundant Inject: Adding card ${currentRefreshed} in handleDiscard (was missing)`);
+          list = [currentRefreshed, ...list];
+        } else if (currentRefreshed) {
+          // Move to front if already there for transparency
+          const filtered = list.filter(id => id !== currentRefreshed);
+          list = [currentRefreshed, ...filtered];
         }
 
-        setPlayerRefreshDiscarded(true)
-        // Don't manually end refresh phase - it will end when turn progresses
-        setRefreshDrawnCard(null)
-        setSelectedForDiscard(null)
-        return
+        console.log(`[DEBUG] Player deck updated (removal + draw check). new size: ${list.length}`)
+        return list
+      })
+
+      setPlayerRefreshDiscarded(true)
+
+      // AI Failsafe: Ensure phase can advance
+      if (!aiRefreshDiscarded) {
+        console.log('[DEBUG] Forcing AI discard flag in handleDiscard failsafe')
+        setAiRefreshDiscarded(true)
       }
 
+      setSelectedForDiscard(null)
+      return
+    }
+
+    // Standard Discard Phase logic (Turn 0)
+    if (!discardedCards.includes(selectedForDiscard)) {
       const newDiscarded = [...discardedCards, selectedForDiscard]
       setDiscardedCards(newDiscarded)
 
@@ -434,10 +489,210 @@ function App() {
       const traits = await fetchTraitsForCitizen(citizenId)
       if (traits) {
         setCitizenTraits(prev => ({ ...prev, [citizenId]: traits }))
+
+        // INTERLINKED mode: Initialize trait scores when traits are loaded
+        if (gameMode === 'interlinked') {
+          const scores = getInitialTraitScores(citizenId)
+          if (scores) {
+            setCardTraitScores(prev => ({ ...prev, [citizenId]: scores }))
+          }
+        }
+
         return traits
       }
     }
     return citizenTraits[citizenId]
+  }
+
+  // INTERLINKED mode: Calculate initial trait scores from traitScores.json
+  const getInitialTraitScores = (cardId: number): CardTraitScores | null => {
+    const traits = citizenTraits[cardId]
+    if (!traits) return null
+
+    const getScore = (category: string, value: string | number) => {
+      const categoryData = (traitScores as any)[category]
+      if (!categoryData) return 0
+
+      const valStr = String(value)
+      // Try exact match
+      if (categoryData[valStr] !== undefined) return categoryData[valStr]
+
+      // Try case-insensitive match
+      const lowerVal = valStr.toLowerCase()
+      const foundKey = Object.keys(categoryData).find(k => k.toLowerCase() === lowerVal)
+      if (foundKey) return categoryData[foundKey]
+
+      // Default fallback
+      return 10
+    }
+
+    const scores = {
+      race: getScore('Race', traits.race),
+      class: getScore('Class', traits.class),
+      eyes: getScore('Eyes', traits.eyes),
+      ability: getScore('Ability', traits.ability),
+      additionalItem: getScore('Additional Item', traits.additionalItem),
+      helm: getScore('Helm', traits.helm),
+      location: getScore('Location', traits.location),
+      vehicle: getScore('Vehicle', traits.vehicle),
+      apparel: getScore('Apparel', traits.apparel),
+      rewardRate: getScore('Reward Rate', traits.rewardRate),
+      weapon: getScore('Weapon', traits.weapon),
+      strength: getScore('Strength', traits.strength)
+    }
+    console.log(`[DEBUG] Trait Scores for Card ${cardId}:`, scores)
+    return scores
+  }
+
+  // INTERLINKED mode: Resolve battle with trait score reduction
+  const resolveInterlinkBattle = (playerCardId: number, opponentCardId: number) => {
+    let playerScores = cardTraitScores[playerCardId]
+    let opponentScores = cardTraitScores[opponentCardId]
+
+    // Fallback: If scores are missing from state (e.g. fresh load), calculate them now
+    if (!playerScores) {
+      const initInfo = getInitialTraitScores(playerCardId)
+      if (initInfo) playerScores = initInfo
+    }
+    if (!opponentScores) {
+      const initInfo = getInitialTraitScores(opponentCardId)
+      if (initInfo) opponentScores = initInfo
+    }
+
+    if (!playerScores || !opponentScores) {
+      console.error('Missing trait scores for battle')
+      return null
+    }
+
+    const newPlayerScores = { ...playerScores }
+    const newOpponentScores = { ...opponentScores }
+
+    // Fight all 12 traits simultaneously
+    const traits: (keyof CardTraitScores)[] = [
+      'race', 'class', 'eyes', 'ability', 'additionalItem', 'helm',
+      'location', 'vehicle', 'apparel', 'rewardRate', 'weapon', 'strength'
+    ]
+
+    let playerWins = 0
+    let opponentWins = 0
+    let ties = 0
+
+    traits.forEach(trait => {
+      const playerScore = playerScores[trait]
+      const opponentScore = opponentScores[trait]
+      const diff = Math.abs(playerScore - opponentScore)
+
+      if (playerScore > opponentScore) {
+        playerWins++
+        newPlayerScores[trait] = diff
+        newOpponentScores[trait] = 0
+      } else if (opponentScore > playerScore) {
+        opponentWins++
+        newOpponentScores[trait] = diff
+        newPlayerScores[trait] = 0
+      } else {
+        // Tie - no change to scores
+        ties++
+      }
+    })
+
+    // Update state
+    setCardTraitScores(prev => ({
+      ...prev,
+      [playerCardId]: newPlayerScores,
+      [opponentCardId]: newOpponentScores
+    }))
+
+    // Determine winner by trait wins (not combined score)
+    const playerEliminated = playerWins < opponentWins
+    const opponentEliminated = opponentWins < playerWins
+
+    // Check for elimination (6+ traits at 0)
+    const playerZeros = Object.values(newPlayerScores).filter(v => v === 0).length
+    const opponentZeros = Object.values(newOpponentScores).filter(v => v === 0).length
+
+    // Generate detailed battle log
+    // Generate detailed battle log
+    const initPlayerScores = getInitialTraitScores(playerCardId) || playerScores;
+    const initOpponentScores = getInitialTraitScores(opponentCardId) || opponentScores;
+
+    const details = traits.map(trait => {
+      const pScore = playerScores[trait];
+      const oScore = opponentScores[trait];
+      const pBase = initPlayerScores[trait];
+      const oBase = initOpponentScores[trait];
+
+      // Get display values (original strings/numbers)
+      let pDisplay: string | number = pScore;
+      let oDisplay: string | number = oScore;
+
+      if (citizenTraits[playerCardId]) {
+        // Handle case mappings if needed, or just raw value
+        const raw = citizenTraits[playerCardId][trait as keyof CitizenTraits];
+        if (raw !== undefined) {
+          // If the score is reduced, show the current score for text traits, or Base for numeric
+          if (pScore < pBase) {
+            if (typeof raw === 'number') {
+              pDisplay = `${raw} [${pBase}]`;
+            } else {
+              pDisplay = `${raw} [${pScore}]`;
+            }
+          } else {
+            pDisplay = raw;
+          }
+        }
+      }
+      if (citizenTraits[opponentCardId]) {
+        const raw = citizenTraits[opponentCardId][trait as keyof CitizenTraits];
+        if (raw !== undefined) {
+          // Same logic for opponent
+          if (oScore < oBase) {
+            if (typeof raw === 'number') {
+              oDisplay = `${raw} [${oBase}]`;
+            } else {
+              oDisplay = `${raw} [${oScore}]`;
+            }
+          } else {
+            oDisplay = raw;
+          }
+        }
+      }
+
+      let winner: 'player' | 'opponent' | 'tie' = 'tie';
+      if (pScore > oScore) winner = 'player';
+      else if (oScore > pScore) winner = 'opponent';
+
+      // Format trait label
+      const traitLabels: Record<string, string> = {
+        race: 'Race',
+        class: 'Class',
+        eyes: 'Eyes',
+        ability: 'Ability',
+        additionalItem: 'Item',
+        helm: 'Helm',
+        location: 'Location',
+        vehicle: 'Vehicle',
+        apparel: 'Apparel',
+        rewardRate: 'Reward',
+        weapon: 'Weapon',
+        strength: 'Strength'
+      };
+
+      return { trait: traitLabels[trait] || trait, pVal: pDisplay, oVal: oDisplay, winner };
+    });
+    setBattleLog(details);
+
+    return {
+      playerEliminated: playerEliminated || playerZeros >= 6,
+      opponentEliminated: opponentEliminated || opponentZeros >= 6,
+      playerScores: newPlayerScores,
+      opponentScores: newOpponentScores,
+      playerZeros,
+      opponentZeros,
+      playerWins,
+      opponentWins,
+      ties
+    }
   }
 
   // AI opponent decision-making
@@ -600,6 +855,45 @@ function App() {
             [playerBattleCard!]: newPlayerTraits,
             [opponentBattleCard!]: newOpponentTraits
           }))
+        } else if (gameMode === 'interlinked') {
+          // INTERLINKED Combat Logic: 12-trait score reduction
+          const result = resolveInterlinkBattle(playerBattleCard!, opponentBattleCard!)
+
+          if (!result) {
+            console.error('Failed to resolve INTERLINKED battle')
+            return
+          }
+
+          playerDead = result.playerEliminated
+          opponentDead = result.opponentEliminated
+
+          // Determine Winner and Message
+          if (playerDead && opponentDead) {
+            winner = 'tie'
+            message = `MUTUAL ELIMINATION! Both cards destroyed. (Tied ${result.ties} traits, ${result.playerWins}-${result.opponentWins})`
+            setPlayerDeck((prev: any[]) => prev.filter((id: string | number) => id !== playerBattleCard))
+            setOpponentDeck((prev: any[]) => prev.filter((id: string | number) => id !== opponentBattleCard))
+          } else if (opponentDead) {
+            winner = 'player'
+            message = `UNIT ELIMINATED! You won ${result.playerWins} of 12 traits. Opponent card destroyed.`
+            setOpponentDeck((prev: any[]) => prev.filter((id: string | number) => id !== opponentBattleCard))
+          } else if (playerDead) {
+            winner = 'opponent'
+            message = `UNIT LOST! Opponent won ${result.opponentWins} of 12 traits. Your card destroyed.`
+            setPlayerDeck((prev: any[]) => prev.filter((id: string | number) => id !== playerBattleCard))
+          } else {
+            // No elimination, show trait battle results
+            if (result.playerWins > result.opponentWins) {
+              winner = 'player'
+              message = `TRAIT VICTORY! You won ${result.playerWins} of 12 traits (${result.ties} tied)`
+            } else if (result.opponentWins > result.playerWins) {
+              winner = 'opponent'
+              message = `TRAIT DEFEAT! Opponent won ${result.opponentWins} of 12 traits (${result.ties} tied)`
+            } else {
+              winner = 'tie'
+              message = `STALEMATE! Tied ${result.playerWins}-${result.opponentWins} (${result.ties} draws). Both survive.`
+            }
+          }
         } else {
           // Standard logic for other modes
           const traitCategory = playerSelectedTrait!.split(': ')[0]
@@ -638,6 +932,12 @@ function App() {
         }
 
         setBattleResult({ winner, message })
+
+        if (gameMode === 'interlinked') {
+          setShowBattleReport(true)
+          setReportTimer(10)
+        }
+
         setShowBattleAnimation(false)
 
         // Handle Scoring
@@ -648,7 +948,7 @@ function App() {
         }
 
         // Handle Deck Persistence
-        if (gameMode !== 'last-citizen-standing') {
+        if (gameMode !== 'last-citizen-standing' && gameMode !== 'interlinked') {
           if (winner === 'player') opponentDead = true
           else if (winner === 'opponent') playerDead = true
         }
@@ -660,71 +960,97 @@ function App() {
           setOpponentDeck((prev: number[]) => prev.filter(id => id !== opponentBattleCard))
         }
 
-        setTurnCount((prev: number) => {
-          const newTurnCount = prev + 1
+        // Turn progression is handled here for non-combat discards/timeouts
+        if (gameMode !== 'interlinked') {
+          setTurnCount((prev: number) => {
+            const newTurnCount = prev + 1
 
-          // Phase 12: Periodic Card Deal is now handled by Refresh Phase (lines 874-983)
-          // The old automatic card draw logic has been removed to prevent conflicts
+            // Phase 12: Periodic Card Deal is now handled by Refresh Phase (lines 874-983)
+            // The old automatic card draw logic has been removed to prevent conflicts
 
-          return newTurnCount
-        })
+            return newTurnCount
+          })
 
-        setTimeout(() => {
-          setBattleResult(null)
-          setPlayerBattleCard(null)
-          setPlayerSelectedTrait(null)
-          setPlayerSelectedSecondTrait(null)
-          setOpponentBattleCard(null)
-          setOpponentSelectedTrait(null)
-          setOpponentSelectedSecondTrait(null)
-          setIsPlayerTurn(!isPlayerTurn)
-          setTimer(30)
-        }, 1500)
+          setTimeout(() => {
+            setBattleResult(null)
+            setPlayerBattleCard(null)
+            setPlayerSelectedTrait(null)
+            setPlayerSelectedSecondTrait(null)
+            setOpponentBattleCard(null)
+            setOpponentSelectedTrait(null)
+            setOpponentSelectedSecondTrait(null)
+            setIsPlayerTurn(!isPlayerTurn)
+            setTimer(30)
+          }, 1500)
+        }
       }, 1500)
     }
   }, [playerBattleCard, opponentBattleCard, battleResult, gameMode, isPlayerTurn, playerScore, opponentScore, citizenTraits, getTraitCount, getTraitKey, playerDeck.length, opponentDeck.length])
 
-  // Phase 11: LCS Auto-Elimination Sweeper (3+ Zero Traits)
+  // Phase 11: LCS & INTERLINKED Auto-Elimination Sweeper
   useEffect(() => {
-    if (gameMode !== 'last-citizen-standing') return
+    if (gameMode !== 'last-citizen-standing' && gameMode !== 'interlinked') return
     // Skip elimination during refresh phase - players are actively managing their deck
     if (isRefreshPhase) return
 
     const checkElimination = (deck: number[]) => {
-      return deck.filter(cardId => {
-        const traits = citizenTraits[cardId]
-        if (!traits) return true // Keep if traits haven't loaded yet to be safe
+      const normalizedLastRefresh = lastRefreshCard ? Number(lastRefreshCard) : null
+      if (normalizedLastRefresh) console.log(`[DEBUG] checkElimination checking deck. Protecting last refresh card: ${normalizedLastRefresh}`);
 
-        const zeroTraitsCount = [
-          traits.strength, traits.intelligence, traits.cool,
-          traits.techSkill, traits.attractiveness,
-          parseFloat(traits.rewardRate) || 0
-        ].filter(v => v === 0 || v === "0").length
+      return deck.filter(id => {
+        const cardId = Number(id)
+        if (gameMode === 'last-citizen-standing') {
+          // LCS mode: Check numeric traits
+          const traits = citizenTraits[cardId]
+          if (!traits) return true // Keep if traits haven't loaded yet to be safe
 
-        // Cards with 3+ zero traits should always be eliminated, even if they're the last refresh card
-        if (zeroTraitsCount >= 3) return false
+          const zeroTraitsCount = [
+            traits.strength, traits.intelligence, traits.cool,
+            traits.techSkill, traits.attractiveness,
+            parseFloat(traits.rewardRate) || 0
+          ].filter(v => Number(v) === 0).length
 
-        // Protect the last refresh card from elimination (only if it has < 3 zeros)
-        if (cardId === lastRefreshCard) return true
+          // Cards with 3+ zero traits should always be eliminated, even if they're the last refresh card
+          if (zeroTraitsCount >= 3) return false
 
-        return zeroTraitsCount < 3
+          // Protect the last refresh card from elimination (only if it has < 3 zeros)
+          if (cardId === normalizedLastRefresh) return true
+
+          return zeroTraitsCount < 3
+        } else if (gameMode === 'interlinked') {
+          // INTERLINKED mode: Check trait scores
+          const scores = cardTraitScores[cardId]
+          if (!scores) return true // Keep if scores haven't loaded yet
+
+          const zeroScoresCount = Object.values(scores).filter(v => Number(v) === 0).length
+
+          // Cards with 6+ zero scores should be eliminated
+          if (zeroScoresCount >= 6) return false
+
+          // Protect the last refresh card from elimination (only if it has < 6 zeros)
+          if (cardId === normalizedLastRefresh) return true
+
+          return zeroScoresCount < 6
+        }
+
+        return true
       })
     }
 
     const cleanPlayerDeck = checkElimination(playerDeck)
     if (cleanPlayerDeck.length !== playerDeck.length) {
-      const removedCards = playerDeck.filter(id => !cleanPlayerDeck.includes(id))
+      const removedCards = playerDeck.filter(id => !cleanPlayerDeck.map(nid => Number(nid)).includes(Number(id)))
       console.log(`[DEBUG] checkElimination removed ${removedCards.length} cards from player deck:`, removedCards)
-      setPlayerDeck(cleanPlayerDeck)
+      setPlayerDeck(cleanPlayerDeck.map(id => Number(id)))
       if (cleanPlayerDeck.length === 0) setGameOver('lose')
     }
 
     const cleanOpponentDeck = checkElimination(opponentDeck)
     if (cleanOpponentDeck.length !== opponentDeck.length) {
-      setOpponentDeck(cleanOpponentDeck)
+      setOpponentDeck(cleanOpponentDeck.map(id => Number(id)))
       if (cleanOpponentDeck.length === 0) setGameOver('win')
     }
-  }, [citizenTraits, playerDeck, opponentDeck, gameMode, isRefreshPhase, lastRefreshCard])
+  }, [citizenTraits, playerDeck, opponentDeck, gameMode, isRefreshPhase, lastRefreshCard, cardTraitScores])
 
   // Phase 11: Robust Trait Loader (ensure all deck cards have traits)
   useEffect(() => {
@@ -755,7 +1081,7 @@ function App() {
   useEffect(() => {
     if (!gameStarted || gameOver || gamePhase !== 'battle') return
 
-    if (gameMode === 'last-citizen-standing') {
+    if (gameMode === 'last-citizen-standing' || gameMode === 'interlinked') {
       if (playerDeck.length === 0) {
         setGameOver('lose')
       } else if (opponentDeck.length === 0) {
@@ -820,7 +1146,24 @@ function App() {
 
   // AI Turn Logic for LCS mode
   useEffect(() => {
-    if (gameMode === 'last-citizen-standing' && !isPlayerTurn && !playerBattleCard && !opponentBattleCard && !battleResult && !isRefreshPhase && opponentDeck.length > 0) {
+    // console.log(`[DEBUG] AI Turn Check: Mode=${gameMode}, PlayerTurn=${isPlayerTurn}, PBC=${playerBattleCard}, OBC=${opponentBattleCard}, Res=${battleResult}, Refresh=${isRefreshPhase}, Deck=${opponentDeck.length}, Turn=${turnCount}`)
+
+
+    // Failsafe: If it's Opponent's turn but Turn Count is still 1 (Player's turn), force sync to Turn 2
+    if ((gameMode === 'last-citizen-standing' || gameMode === 'interlinked') && !isPlayerTurn && turnCount === 1) {
+      console.warn('[FIX] Detected Turn 1 Desync. Auto-correcting to Turn 2.')
+      setTurnCount(2)
+      return
+    }
+
+    // Failsafe: Correct gamePhase if incorrectly in 'discard' after game start (Turn > 0)
+    if (turnCount > 0 && gamePhase === 'discard') {
+      console.warn('[FIX] Detected gamePhase "discard" on Turn > 0. Forcing "battle".')
+      setGamePhase('battle')
+    }
+
+    if ((gameMode === 'last-citizen-standing' || gameMode === 'interlinked') && !isPlayerTurn && !playerBattleCard && !opponentBattleCard && !battleResult && !isRefreshPhase && opponentDeck.length > 0 && turnCount % 2 === 0 && turnCount % 10 !== 0) {
+      console.log('[DEBUG] AI Turn Triggered!')
 
       // Step 1: Thinking delay (1.5s)
       const thinkingTimer = setTimeout(() => {
@@ -876,146 +1219,275 @@ function App() {
 
       return () => clearTimeout(thinkingTimer)
     }
-  }, [isPlayerTurn, opponentDeck, playerDeck, gameMode, playerBattleCard, opponentBattleCard, battleResult, isRefreshPhase])
+  }, [isPlayerTurn, opponentDeck, playerDeck, gameMode, playerBattleCard, opponentBattleCard, battleResult, isRefreshPhase, turnCount])
 
 
-  // Phase 5: Check for refresh phase every 10 turns (Last Citizen Standing mode)
+  // Keyboard Shortcuts for Conflict Modal
   useEffect(() => {
-    if (gameMode !== 'last-citizen-standing') return
+    if (!pendingTarget || battleResult || !isPlayerTurn) return;
 
-    // Check if we should be in refresh phase
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent default scrolling for arrow keys
+      if (['ArrowLeft', 'ArrowRight', 'Enter'].includes(e.key)) {
+        e.preventDefault();
+      }
+
+      if (e.key === 'ArrowLeft') {
+        setPendingTarget((prev: string | number | null) => {
+          if (!prev) return prev;
+          const currentIndex = opponentDeck.findIndex((id: string | number) => id === prev);
+          // If not found, default to 0
+          if (currentIndex === -1) return opponentDeck.length > 0 ? opponentDeck[0] : null;
+
+          const prevIndex = currentIndex > 0 ? currentIndex - 1 : opponentDeck.length - 1;
+          return opponentDeck[prevIndex];
+        });
+      } else if (e.key === 'ArrowRight') {
+        setPendingTarget((prev: string | number | null) => {
+          if (!prev) return prev;
+          const currentIndex = opponentDeck.findIndex((id: string | number) => id === prev);
+          if (currentIndex === -1) return opponentDeck.length > 0 ? opponentDeck[0] : null;
+
+          const nextIndex = currentIndex < opponentDeck.length - 1 ? currentIndex + 1 : 0;
+          return opponentDeck[nextIndex];
+        });
+      } else if (e.key === 'Enter') {
+        // Trigger Initiate Clash
+        setOpponentBattleCard(pendingTarget);
+        setPendingTarget(null);
+        setIsTargeting(false);
+        setHoveredTargetRect(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [pendingTarget, battleResult, isPlayerTurn, opponentDeck, setOpponentBattleCard, setPendingTarget, setIsTargeting, setHoveredTargetRect]);
+
+
+  // Phase 5: Check for refresh phase every 10 turns (LCS & INTERLINKED modes)
+  useEffect(() => {
+    if (gameMode !== 'last-citizen-standing' && gameMode !== 'interlinked') return
+
     // Turn 10, 20, 30 etc.
-    if (turnCount > 0 && turnCount % 10 === 0) {
-      // If we are already in refresh phase OR player has already discarded, do nothing
-      if (isRefreshPhase || playerRefreshDiscarded) return;
+    if (turnCount > 0 && turnCount % 10 === 0 && !isRefreshPhase && !playerRefreshDiscarded) {
+      console.log(`[DEBUG] Initiating Refresh Phase for turn ${turnCount}`)
 
-      console.log(`[DEBUG] Initiating Refresh Phase (Turn ${turnCount}). battleResult present: ${!!battleResult}`)
+      // Normalize all IDs to numbers for reliable comparison
+      const usedIds = new Set([
+        ...playerDeck.map(id => Number(id)),
+        ...opponentDeck.map(id => Number(id)),
+        ...discardedCards.map(id => Number(id))
+      ])
+      const vCitizens = citizens.filter(c => c.loaded)
 
-      // Force refresh phase even if battle result is showing
-      // This ensures we don't get stuck if turnCount updates before battleResult clears
+      let pDraw: number | null = null
+      let aDraw: number | null = null
+
+      // Try to find available citizens from loaded ones first
+      for (const c of vCitizens) {
+        if (!usedIds.has(c.id)) {
+          if (!pDraw) pDraw = c.id
+          else if (!aDraw) { aDraw = c.id; break }
+        }
+      }
+
+      // Fallback to random if needed
+      if (!pDraw || !aDraw) {
+        const allIds = Array.from({ length: 3968 }, (_, i) => i + 1).filter(id => id !== 0 && !usedIds.has(id))
+        const pick = () => {
+          if (allIds.length === 0) return null
+          const idx = Math.floor(Math.random() * allIds.length)
+          const id = allIds[idx]
+          allIds.splice(idx, 1)
+          return id
+        }
+        if (!pDraw) pDraw = pick()
+        if (!aDraw) aDraw = pick()
+      }
+
+      console.log(`[DEBUG] Refresh Picks - Player: ${pDraw}, AI: ${aDraw}`)
+
+      // 1. Set Phase Flags
       setIsRefreshPhase(true)
       setPlayerRefreshDiscarded(false)
       setAiRefreshDiscarded(false)
-      setLastRefreshCard(null) // Clear previous refresh card protection
-
-      // Safety: Ensure AI turn doesn't proceed
+      setRefreshDrawnCard(pDraw)
+      setAiRefreshDrawnCard(aDraw)
+      setLastRefreshCard(pDraw) // Protect the new player card immediately
       setIsTargeting(false)
       setPendingTarget(null)
 
-      const usedIds = new Set([
-        ...playerDeck,
-        ...opponentDeck,
-        ...discardedCards
-      ])
+      // 2. INJECT DRAWN CARDS IMMEDIATELY (Force deck sync)
+      if (pDraw) {
+        setPlayerDeck((prev: number[]) => {
+          const list = prev.map(id => Number(id));
+          if (!list.includes(pDraw)) {
+            console.log(`[DEBUG] Injecting Player Card ${pDraw} into FRONT of deck tray.`);
+            return [pDraw, ...list]; // Front-load for visibility
+          }
+          return list;
+        });
 
-      let playerNewCardId: number | null = null
-      let aiNewCardId: number | null = null
-
-      const vCitizens = citizens.filter(c => c.loaded)
-      const allIds = Array.from({ length: 3968 }, (_, i) => i + 1)
-        .filter(id => id !== 0 && !usedIds.has(id))
-
-      const pickRandom = (exclude: number | null) => {
-        const pool = allIds.filter(id => id !== exclude)
-        return pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : null
-      }
-
-      for (let i = 0; i < vCitizens.length; i++) {
-        const cardId = vCitizens[i].id
-        if (!usedIds.has(cardId)) {
-          if (!playerNewCardId) playerNewCardId = cardId
-          else if (!aiNewCardId) { aiNewCardId = cardId; break }
+        // Force trait scores for Interlinked mode immediately
+        if (gameMode === 'interlinked') {
+          const scores = getInitialTraitScores(pDraw);
+          if (scores) {
+            setCardTraitScores(prev => ({ ...prev, [pDraw]: scores }));
+            console.log(`[DEBUG] Forced Interlinked Scores for draw card ${pDraw}`);
+          }
         }
       }
-
-      if (!playerNewCardId) playerNewCardId = pickRandom(null)
-      if (!aiNewCardId) aiNewCardId = pickRandom(playerNewCardId)
-
-      if (playerNewCardId) {
-        console.log(`[DEBUG] Setting refreshDrawnCard to: ${playerNewCardId}`)
-        setRefreshDrawnCard(playerNewCardId)
+      if (aDraw) {
+        setOpponentDeck((prev: number[]) => {
+          const list = prev.map(id => Number(id));
+          if (!list.includes(aDraw)) {
+            console.log(`[DEBUG] Injecting AI Card ${aDraw} into AI deck.`);
+            return [aDraw, ...list];
+          }
+          return list;
+        });
       }
 
-      const loadTraits = (id: number) => {
-        if (!citizenTraits[id]) {
-          fetch(`https://eth-mainnet.g.alchemy.com/nft/v3/0uBM1JotEbL5ERgVwcDEa/getNFTMetadata?contractAddress=0x86357A19E5537A8Fba9A004E555713BC943a66C0&tokenId=${id}&refreshCache=false`)
-            .then(res => res.json())
-            .then(data => {
-              const attrs = data.raw?.metadata?.attributes || []
-              const newTraits: CitizenTraits = { class: 'Unknown', race: 'Unknown', strength: 0, intelligence: 0, attractiveness: 0, techSkill: 0, cool: 0, eyes: 'Unknown', ability: 'None', location: 'Unknown', additionalItem: 'None', weapon: 'None', vehicle: 'None', apparel: 'None', helm: 'None', rewardRate: '0' }
-
-              attrs.forEach((attr: { trait_type: string, value: string | number }) => {
-                const traitType = attr.trait_type?.toLowerCase().replace(/\s+/g, '')
-                const value = attr.value
-                switch (traitType) {
-                  case 'class': newTraits.class = String(value); break
-                  case 'race': newTraits.race = String(value); break
-                  case 'strength': newTraits.strength = Number(value) || 0; break
-                  case 'intelligence': newTraits.intelligence = Number(value) || 0; break
-                  case 'attractiveness': newTraits.attractiveness = Number(value) || 0; break
-                  case 'techskill': newTraits.techSkill = Number(value) || 0; break
-                  case 'cool': newTraits.cool = Number(value) || 0; break
-                  case 'eyes': newTraits.eyes = String(value); break
-                  case 'ability': newTraits.ability = String(value); break
-                  case 'location': newTraits.location = String(value); break
-                  case 'additionalitem': newTraits.additionalItem = String(value); break
-                  case 'weapon': newTraits.weapon = String(value); break
-                  case 'vehicle': newTraits.vehicle = String(value); break
-                  case 'apparel': newTraits.apparel = String(value); break
-                  case 'helm': newTraits.helm = String(value); break
-                  case 'rewardrate': newTraits.rewardRate = String(value); break
-                }
-              })
-              setCitizenTraits(prev => ({ ...prev, [id]: newTraits }))
-            })
-            .catch(err => console.error('Failed to load refresh card traits:', err))
-        }
+      // Auto-open modal with first card selected to streamline UI
+      if (playerDeck.length > 0) {
+        setSelectedForDiscard(Number(playerDeck[0]))
       }
-
-      if (playerNewCardId) loadTraits(playerNewCardId)
-      if (aiNewCardId) loadTraits(aiNewCardId)
-
-      setTimeout(() => {
-        if (opponentDeck.length > 0) {
-          const weakestCard = opponentDeck.reduce((weakest, cardId) => {
-            const traits = citizenTraits[cardId]
-            const weakestTraits = citizenTraits[weakest]
-            if (!traits) return weakest
-            if (!weakestTraits) return cardId
-            const cardTotal = traits.strength + traits.intelligence + traits.cool + traits.techSkill + traits.attractiveness + (typeof traits.rewardRate === 'number' ? traits.rewardRate : parseFloat(traits.rewardRate) || 0)
-            const weakestTotal = weakestTraits.strength + weakestTraits.intelligence + weakestTraits.cool + weakestTraits.techSkill + weakestTraits.attractiveness + (typeof weakestTraits.rewardRate === 'number' ? weakestTraits.rewardRate : parseFloat(weakestTraits.rewardRate) || 0)
-            return cardTotal < weakestTotal ? cardId : weakest
-          }, opponentDeck[0])
-
-          setOpponentDeck((prev: number[]) => prev.filter(id => id !== weakestCard))
-          setAiRefreshDiscarded(true)
-          if (aiNewCardId) setOpponentDeck((prev: number[]) => [...prev, aiNewCardId!])
-        }
-      }, 1000)
     }
-  }, [turnCount, gameMode, isRefreshPhase, battleResult, playerDeck, opponentDeck, discardedCards, citizens, citizenTraits])
+  }, [turnCount, gameMode, isRefreshPhase, playerRefreshDiscarded, playerDeck, opponentDeck, discardedCards, citizens])
 
-  // End refresh phase after both players have discarded
+  // Helper effect to load traits for the new refresh cards
   useEffect(() => {
-    if (!isRefreshPhase) return
-    if (!playerRefreshDiscarded || !aiRefreshDiscarded) return
+    const loadIfNeeded = async (id: number | null) => {
+      if (id && !citizenTraits[id]) {
+        console.log(`[DEBUG] Pre-loading traits for refresh card ${id}`)
+        const traits = await fetchTraitsForCitizen(id)
+        if (traits) {
+          setCitizenTraits(prev => ({ ...prev, [id]: traits }))
+          if (gameMode === 'interlinked') {
+            const scores = getInitialTraitScores(id)
+            if (scores) setCardTraitScores(prev => ({ ...prev, [id]: scores }))
+          }
+        }
+      }
+    }
+    if (isRefreshPhase) {
+      loadIfNeeded(refreshDrawnCard)
+      loadIfNeeded(aiRefreshDrawnCard)
+    }
+  }, [isRefreshPhase, refreshDrawnCard, aiRefreshDrawnCard, citizenTraits, gameMode])
 
-    console.log('[DEBUG] Both players discarded, ending refresh phase')
+  // AI Refresh Action Effect
+  useEffect(() => {
+    if (!isRefreshPhase || aiRefreshDiscarded || !aiRefreshDrawnCard) return
 
-    // End refresh phase and progress turn
-    setTimeout(() => {
+    console.log(`[DEBUG] AI Refresh logic triggered. AI Deck Size: ${opponentDeck.length}`)
+
+    const aiAction = setTimeout(() => {
+      // Logic: Pick the weakest of the 10 cards to remove
+      if (opponentDeck.length > 0) {
+        const weakestCardId = opponentDeck.reduce((weakest, cardId) => {
+          const traits = citizenTraits[cardId]
+          const weakestTraits = citizenTraits[weakest]
+          if (!traits) return weakest
+          if (!weakestTraits) return cardId
+
+          const getPower = (t: CitizenTraits) => (t.strength || 0) + (t.intelligence || 0) + (t.cool || 0) + (t.techSkill || 0) + (t.attractiveness || 0) + (typeof t.rewardRate === 'number' ? t.rewardRate : parseFloat(t.rewardRate) || 0)
+          return getPower(traits) < getPower(weakestTraits) ? cardId : weakest
+        }, opponentDeck[0])
+
+        console.log(`[DEBUG] AI Refreshing: Removing weakest card ${weakestCardId}`)
+        setOpponentDeck((prev: number[]) => {
+          const normalizedWeakest = Number(weakestCardId)
+          const newDeck = prev.filter(id => Number(id) !== normalizedWeakest).map(id => Number(id))
+          console.log(`[DEBUG] AI Deck updated (removal only). New size: ${newDeck.length}`)
+          return newDeck
+        })
+      }
+      setAiRefreshDiscarded(true)
+    }, 800)
+
+    return () => clearTimeout(aiAction)
+  }, [isRefreshPhase, aiRefreshDiscarded, aiRefreshDrawnCard, opponentDeck])
+
+  // Combined transition effect
+  useEffect(() => {
+    if (!isRefreshPhase || !playerRefreshDiscarded || !aiRefreshDiscarded) return
+
+    console.log('[DEBUG] Both players finished refresh, transitioning to battle')
+
+    const timer = setTimeout(() => {
+      // 1. Force state synchronization check
+      const pCard = Number(refreshDrawnCard);
+      const aCard = Number(aiRefreshDrawnCard);
+
+      if (pCard) {
+        setPlayerDeck((prev: number[]) => {
+          const list = prev.map(id => Number(id));
+          if (!list.includes(pCard)) {
+            console.log(`[DEBUG] Final transition check: Force injecting card ${pCard} to FRONT`);
+            return [pCard, ...list];
+          }
+          // Also ensure it is at the front if already there
+          const filtered = list.filter(id => id !== pCard);
+          return [pCard, ...filtered];
+        });
+      }
+
+      if (aCard) {
+        setOpponentDeck((prev: number[]) => {
+          const list = prev.map(id => Number(id));
+          if (!list.includes(aCard)) {
+            console.log(`[DEBUG] Final AI transition check: Force injecting AI card ${aCard} to FRONT`);
+            return [aCard, ...list];
+          }
+          const filtered = list.filter(id => id !== aCard);
+          return [aCard, ...filtered];
+        });
+      }
+
+      // 2. Perform phase transition
       setIsRefreshPhase(false)
       setPlayerRefreshDiscarded(false)
       setAiRefreshDiscarded(false)
+      setRefreshDrawnCard(null)
+      setAiRefreshDrawnCard(null)
+      setSelectedForDiscard(null)
       setTurnCount(prev => prev + 1)
-    }, 500)
-  }, [isRefreshPhase, playerRefreshDiscarded, aiRefreshDiscarded])
+      setIsPlayerTurn(true) // Turn 11 is Player's turn (ODD)
+      setTimer(30) // Ensure timer starts fresh for Turn 11
+      console.log('[DEBUG] Refresh Phase ended. Turn advanced to 11 (Player).')
+    }, 400)
+    return () => clearTimeout(timer)
+  }, [isRefreshPhase, playerRefreshDiscarded, aiRefreshDiscarded, refreshDrawnCard, aiRefreshDrawnCard])
+
+  // Failsafe Refresh Phase Transition (ensure game never stops)
+  useEffect(() => {
+    if (!isRefreshPhase) return
+
+    const failsafe = setTimeout(() => {
+      if (isRefreshPhase) {
+        console.warn('[WARNING] Refresh Phase failsafe triggered. Forcing phase end.')
+        setIsRefreshPhase(false)
+        setPlayerRefreshDiscarded(false)
+        setAiRefreshDiscarded(false)
+        setRefreshDrawnCard(null)
+        setAiRefreshDrawnCard(null)
+        setSelectedForDiscard(null)
+        setTurnCount(prev => prev + 1)
+      }
+    }, 15000)
+
+    return () => clearTimeout(failsafe)
+  }, [isRefreshPhase])
 
 
   // Timer countdown
   useEffect(() => {
+    if (showBattleReport) return
     if (!gameStarted) return
     if (gamePhase === 'discard' && validCitizens.length < 24) return
+    if (isRefreshPhase) return // Pause timer during refresh
     // Removed: Timer should keep running during targeting and conflict initiated modes
 
     if (timer > 0) {
@@ -1053,6 +1525,21 @@ function App() {
         const aiDeck = aiCardsWithPower.slice(0, 9).map(c => c.id)
         setOpponentDeck(aiDeck)
 
+        // INTERLINKED mode: Initialize trait scores for all cards
+        if (gameMode === 'interlinked') {
+          const allCards = [...playerCards, ...aiDeck]
+          const initialScores: Record<number, CardTraitScores> = {}
+
+          allCards.forEach(cardId => {
+            const scores = getInitialTraitScores(cardId)
+            if (scores) {
+              initialScores[cardId] = scores
+            }
+          })
+
+          setCardTraitScores(initialScores)
+        }
+
         setGamePhase('battle')
         setTimer(30)
       } else if (gamePhase === 'battle' && isPlayerTurn) {
@@ -1069,23 +1556,61 @@ function App() {
           setTimeout(() => {
             setShowBattleAnimation(false)
             // Resolve battle
-            const pTraits = citizenTraits[playerBattleCard]
-            const oTraits = citizenTraits[pendingTarget]
-            if (pTraits && oTraits) {
-              const pTotal = (pTraits.strength || 0) + (pTraits.intelligence || 0) + (pTraits.cool || 0) + (pTraits.techSkill || 0) + (pTraits.attractiveness || 0)
-              const oTotal = (oTraits.strength || 0) + (oTraits.intelligence || 0) + (oTraits.cool || 0) + (oTraits.techSkill || 0) + (oTraits.attractiveness || 0)
-              const playerWins = pTotal >= oTotal
-              setBattleResult({
-                winner: playerWins ? 'player' : 'opponent',
-                message: playerWins ? `Your citizen's combined stats (${pTotal}) beat the opponent (${oTotal})!` : `Opponent's combined stats (${oTotal}) defeated yours (${pTotal}).`
-              })
-              if (playerWins) {
-                setPlayerScore((prev: number) => prev + 1)
-                setOpponentDeck((prev: string[]) => prev.filter((id: string) => id !== pendingTarget))
-              } else {
-                setOpponentScore((prev: number) => prev + 1)
-                setPlayerDeck((prev: string[]) => prev.filter((id: string) => id !== playerBattleCard))
+            if (gameMode === 'interlinked') {
+              const result = resolveInterlinkBattle(playerBattleCard, pendingTarget)
+              if (result) {
+                let msg = `Tied ${result.ties} traits`
+                let winner: 'player' | 'opponent' | 'tie' = 'tie'
+                if (result.playerWins > result.opponentWins) { winner = 'player'; msg = `TRAIT VICTORY! You won ${result.playerWins} of 12 traits` }
+                else if (result.opponentWins > result.playerWins) { winner = 'opponent'; msg = `TRAIT DEFEAT! Opponent won ${result.opponentWins} of 12 traits` }
+
+                if (result.opponentEliminated) { msg = `UNIT ELIMINATED! You won ${result.playerWins} of 12 traits`; winner = 'player' }
+                else if (result.playerEliminated) { msg = `UNIT LOST! Opponent won ${result.opponentWins} of 12 traits`; winner = 'opponent' }
+
+                setBattleResult({ winner, message: msg })
+
+                if (result.playerEliminated) {
+                  setPlayerDeck((prev: string[]) => prev.filter((id: string) => id !== playerBattleCard))
+                  setOpponentScore((prev: number) => prev + 1)
+                }
+                if (result.opponentEliminated) {
+                  setOpponentDeck((prev: string[]) => prev.filter((id: string) => id !== pendingTarget))
+                  setPlayerScore((prev: number) => prev + 1)
+                }
+
+                // Pause for Battle Report (Interlinked)
+                setShowBattleReport(true)
+                setReportTimer(10)
               }
+            } else {
+              const pTraits = citizenTraits[playerBattleCard]
+              const oTraits = citizenTraits[pendingTarget]
+              if (pTraits && oTraits) {
+                const pTotal = (pTraits.strength || 0) + (pTraits.intelligence || 0) + (pTraits.cool || 0) + (pTraits.techSkill || 0) + (pTraits.attractiveness || 0)
+                const oTotal = (oTraits.strength || 0) + (oTraits.intelligence || 0) + (oTraits.cool || 0) + (oTraits.techSkill || 0) + (oTraits.attractiveness || 0)
+                const playerWins = pTotal >= oTotal
+                setBattleResult({
+                  winner: playerWins ? 'player' : 'opponent',
+                  message: playerWins ? `Your citizen's combined stats (${pTotal}) beat the opponent (${oTotal})!` : `Opponent's combined stats (${oTotal}) defeated yours (${pTotal}).`
+                })
+                if (playerWins) {
+                  setPlayerScore((prev: number) => prev + 1)
+                  setOpponentDeck((prev: string[]) => prev.filter((id: string) => id !== pendingTarget))
+                } else {
+                  setOpponentScore((prev: number) => prev + 1)
+                  setPlayerDeck((prev: string[]) => prev.filter((id: string) => id !== playerBattleCard))
+                }
+              }
+            }
+
+            // Cleanup and Next Turn
+            if (gameMode !== 'interlinked') {
+              setTimeout(() => {
+                setBattleResult(null)
+                setPlayerBattleCard(null)
+                setOpponentBattleCard(null)
+                setTurnCount((prev: number) => prev + 1)
+              }, 2500)
             }
           }, 1500)
           setTimer(30)
@@ -1105,23 +1630,61 @@ function App() {
             setTimeout(() => {
               setShowBattleAnimation(false)
               // Resolve battle
-              const pTraits = citizenTraits[playerBattleCard]
-              const oTraits = citizenTraits[randomTarget]
-              if (pTraits && oTraits) {
-                const pTotal = (pTraits.strength || 0) + (pTraits.intelligence || 0) + (pTraits.cool || 0) + (pTraits.techSkill || 0) + (pTraits.attractiveness || 0)
-                const oTotal = (oTraits.strength || 0) + (oTraits.intelligence || 0) + (oTraits.cool || 0) + (oTraits.techSkill || 0) + (oTraits.attractiveness || 0)
-                const playerWins = pTotal >= oTotal
-                setBattleResult({
-                  winner: playerWins ? 'player' : 'opponent',
-                  message: playerWins ? `Your citizen's combined stats (${pTotal}) beat the opponent (${oTotal})!` : `Opponent's combined stats (${oTotal}) defeated yours (${pTotal}).`
-                })
-                if (playerWins) {
-                  setPlayerScore((prev: number) => prev + 1)
-                  setOpponentDeck((prev: string[]) => prev.filter((id: string) => id !== randomTarget))
-                } else {
-                  setOpponentScore((prev: number) => prev + 1)
-                  setPlayerDeck((prev: string[]) => prev.filter((id: string) => id !== playerBattleCard))
+              if (gameMode === 'interlinked') {
+                const result = resolveInterlinkBattle(playerBattleCard, randomTarget)
+                if (result) {
+                  let msg = `Tied ${result.ties} traits`
+                  let winner: 'player' | 'opponent' | 'tie' = 'tie'
+                  if (result.playerWins > result.opponentWins) { winner = 'player'; msg = `TRAIT VICTORY! You won ${result.playerWins} of 12 traits` }
+                  else if (result.opponentWins > result.playerWins) { winner = 'opponent'; msg = `TRAIT DEFEAT! Opponent won ${result.opponentWins} of 12 traits` }
+
+                  if (result.opponentEliminated) { msg = `UNIT ELIMINATED! You won ${result.playerWins} of 12 traits`; winner = 'player' }
+                  else if (result.playerEliminated) { msg = `UNIT LOST! Opponent won ${result.opponentWins} of 12 traits`; winner = 'opponent' }
+
+                  setBattleResult({ winner, message: msg })
+
+                  if (result.playerEliminated) {
+                    setPlayerDeck((prev: string[]) => prev.filter((id: string) => id !== playerBattleCard))
+                    setOpponentScore((prev: number) => prev + 1)
+                  }
+                  if (result.opponentEliminated) {
+                    setOpponentDeck((prev: string[]) => prev.filter((id: string) => id !== randomTarget))
+                    setPlayerScore((prev: number) => prev + 1)
+                  }
+
+                  // Pause for Battle Report
+                  setShowBattleReport(true);
+                  setReportTimer(10);
                 }
+              } else {
+                const pTraits = citizenTraits[playerBattleCard]
+                const oTraits = citizenTraits[randomTarget]
+                if (pTraits && oTraits) {
+                  const pTotal = (pTraits.strength || 0) + (pTraits.intelligence || 0) + (pTraits.cool || 0) + (pTraits.techSkill || 0) + (pTraits.attractiveness || 0)
+                  const oTotal = (oTraits.strength || 0) + (oTraits.intelligence || 0) + (oTraits.cool || 0) + (oTraits.techSkill || 0) + (oTraits.attractiveness || 0)
+                  const playerWins = pTotal >= oTotal
+                  setBattleResult({
+                    winner: playerWins ? 'player' : 'opponent',
+                    message: playerWins ? `Your citizen's combined stats (${pTotal}) beat the opponent (${oTotal})!` : `Opponent's combined stats (${oTotal}) defeated yours (${pTotal}).`
+                  })
+                  if (playerWins) {
+                    setPlayerScore((prev: number) => prev + 1)
+                    setOpponentDeck((prev: string[]) => prev.filter((id: string) => id !== randomTarget))
+                  } else {
+                    setOpponentScore((prev: number) => prev + 1)
+                    setPlayerDeck((prev: string[]) => prev.filter((id: string) => id !== playerBattleCard))
+                  }
+                }
+              }
+
+              // Cleanup and Next Turn (Standard mode only - Interlinked handles via Report close)
+              if (gameMode !== 'interlinked') {
+                setTimeout(() => {
+                  setBattleResult(null)
+                  setPlayerBattleCard(null)
+                  setOpponentBattleCard(null)
+                  setTurnCount((prev: number) => prev + 1)
+                }, 2500)
               }
             }, 1500)
             setTimer(30)
@@ -1143,23 +1706,45 @@ function App() {
             setTimeout(() => {
               setShowBattleAnimation(false)
               // Resolve battle
-              const pTraits = citizenTraits[randomCard]
-              const oTraits = citizenTraits[randomTarget]
-              if (pTraits && oTraits) {
-                const pTotal = (pTraits.strength || 0) + (pTraits.intelligence || 0) + (pTraits.cool || 0) + (pTraits.techSkill || 0) + (pTraits.attractiveness || 0)
-                const oTotal = (oTraits.strength || 0) + (oTraits.intelligence || 0) + (oTraits.cool || 0) + (oTraits.techSkill || 0) + (oTraits.attractiveness || 0)
-                const playerWins = pTotal >= oTotal
-                setBattleResult({
-                  winner: playerWins ? 'player' : 'opponent',
-                  message: playerWins ? `Your citizen's combined stats (${pTotal}) beat the opponent (${oTotal})!` : `Opponent's combined stats (${oTotal}) defeated yours (${pTotal}).`
-                })
-                if (playerWins) {
-                  setPlayerScore((prev: number) => prev + 1)
+              if (gameMode === 'interlinked') {
+                const result = resolveInterlinkBattle(randomCard, randomTarget)
+                if (result.opponentEliminated) {
                   setOpponentDeck((prev: string[]) => prev.filter((id: string) => id !== randomTarget))
-                } else {
-                  setOpponentScore((prev: number) => prev + 1)
-                  setPlayerDeck((prev: string[]) => prev.filter((id: string) => id !== randomCard))
+                  setPlayerScore((prev: number) => prev + 1)
                 }
+
+                // Pause for Battle Report
+                setShowBattleReport(true);
+                setReportTimer(10);
+              } else {
+                const pTraits = citizenTraits[randomCard]
+                const oTraits = citizenTraits[randomTarget]
+                if (pTraits && oTraits) {
+                  const pTotal = (pTraits.strength || 0) + (pTraits.intelligence || 0) + (pTraits.cool || 0) + (pTraits.techSkill || 0) + (pTraits.attractiveness || 0)
+                  const oTotal = (oTraits.strength || 0) + (oTraits.intelligence || 0) + (oTraits.cool || 0) + (oTraits.techSkill || 0) + (oTraits.attractiveness || 0)
+                  const playerWins = pTotal >= oTotal
+                  setBattleResult({
+                    winner: playerWins ? 'player' : 'opponent',
+                    message: playerWins ? `Your citizen's combined stats (${pTotal}) beat the opponent (${oTotal})!` : `Opponent's combined stats (${oTotal}) defeated yours (${pTotal}).`
+                  })
+                  if (playerWins) {
+                    setPlayerScore((prev: number) => prev + 1)
+                    setOpponentDeck((prev: string[]) => prev.filter((id: string) => id !== randomTarget))
+                  } else {
+                    setOpponentScore((prev: number) => prev + 1)
+                    setPlayerDeck((prev: string[]) => prev.filter((id: string) => id !== randomCard))
+                  }
+                }
+              }
+
+              // Cleanup and Next Turn (Standard mode only - Interlinked handles via Report close)
+              if (gameMode !== 'interlinked') {
+                setTimeout(() => {
+                  setBattleResult(null)
+                  setPlayerBattleCard(null)
+                  setOpponentBattleCard(null)
+                  setTurnCount((prev: number) => prev + 1)
+                }, 2500)
               }
             }, 1500)
             setTimer(30)
@@ -1167,7 +1752,7 @@ function App() {
         }
       }
     }
-  }, [timer, gameStarted, gamePhase, validCitizens, discardedCards, playerBattleCard, playerDeck, opponentDeck, citizenTraits, pendingTarget, isTargeting, isPlayerTurn])
+  }, [timer, gameStarted, gamePhase, validCitizens, discardedCards, playerBattleCard, playerDeck, opponentDeck, citizenTraits, pendingTarget, isTargeting, isPlayerTurn, showBattleReport])
 
   // Removed: Timer reset when card is retracted - timer should keep running continuously
 
@@ -1256,6 +1841,64 @@ function App() {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedBattleCard, playerDeck, gamePhase])
+
+  // Handle Battle Report Close (Manual or Timer)
+  const handleReportClose = () => {
+    setShowBattleReport(false);
+    setBattleLog(null);
+    setReportTimer(10);
+
+    // Proceed to next turn
+    // If there is a winner/elimination, keep battleResult active for a short delay to show the outcome modal
+    // Otherwise clean up immediately
+    const delay = battleResult ? 2500 : 0;
+
+    setTimeout(() => {
+      setBattleResult(null);
+      setPlayerBattleCard(null);
+      setOpponentBattleCard(null);
+      setTurnCount((prev: number) => prev + 1);
+      setIsPlayerTurn(prev => !prev);
+    }, delay);
+  };
+
+  // Auto-reset timer when report opens
+  useEffect(() => {
+    if (showBattleReport) {
+      setReportTimer(10);
+    }
+  }, [showBattleReport]);
+
+  // Keyboard shortcut for closing Battle Report
+  useEffect(() => {
+    if (!showBattleReport) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleReportClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showBattleReport]);
+
+  // Timer Tick
+  useEffect(() => {
+    // console.log(`[DEBUG] Timer Effect: show=${showBattleReport}, timer=${reportTimer}`)
+    if (!showBattleReport) return;
+
+    if (reportTimer === 0) {
+      // console.log('[DEBUG] Timer reached 0, closing report')
+      handleReportClose();
+      return;
+    }
+
+    const timerId = setTimeout(() => {
+      setReportTimer(prev => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timerId);
+  }, [showBattleReport, reportTimer]);
 
   return (
     <div className="relative w-screen min-h-screen overflow-hidden flex flex-col items-center justify-start">
@@ -1360,6 +2003,14 @@ function App() {
                     <div className="type-title text-orange-400 group-hover:text-orange-300 transition-colors mb-2">Last Citizen</div>
                     <div className="type-body text-xs opacity-70 group-hover:opacity-100">Total attrition warfare. Eliminate all assets.</div>
                   </button>
+
+                  <button
+                    className="btn-mode btn-mode-cyan group"
+                    onClick={() => startGameWithMode('interlinked')}
+                  >
+                    <div className="type-title text-cyan-400 group-hover:text-cyan-300 transition-colors mb-2">INTERLINKED</div>
+                    <div className="type-body text-xs opacity-70 group-hover:opacity-100">Trait-based warfare. Score reduction combat.</div>
+                  </button>
                 </div>
 
                 <button
@@ -1414,21 +2065,76 @@ function App() {
               <div className="mt-8 bg-black/90  border border-[#0090ff]/30 rounded-2xl p-8 max-w-3xl shadow-2xl shadow-[#002244]/20 animate-in slide-in-from-bottom-4">
                 <div className="flex justify-between items-start mb-6 border-b border-white/10 pb-4">
                   <h2 className="type-title text-white">Mission Protocols</h2>
-                  <div className="type-meta text-[#0090ff]">v1.2.0</div>
+                  <div className="type-meta text-[#0090ff]">v2.0.0</div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm text-gray-400 leading-relaxed">
-                  <div className="space-y-2">
-                    <div className="text-white font-bold uppercase tracking-wider text-xs border-l-2 border-[#0090ff] pl-3">Deployment</div>
-                    <p>Draw 12 Citizens from the Neo Tokyo distinct set. Discard the 3 weakest assets to optimize your hand. Enter combat with 9 elite units.</p>
+                <div className="space-y-6 text-sm text-gray-400 leading-relaxed">
+                  {/* Core Rules */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <div className="text-white font-bold uppercase tracking-wider text-xs border-l-2 border-[#0090ff] pl-3">Deployment</div>
+                      <p>Draw 12 Citizens from the Neo Tokyo distinct set. Discard the 3 weakest assets to optimize your hand. Enter combat with 9 elite units.</p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-white font-bold uppercase tracking-wider text-xs border-l-2 border-purple-500 pl-3">Engagement</div>
+                      <p>Combat mechanics vary by mode. Standard modes use trait selection; advanced modes use automatic simultaneous battles.</p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-white font-bold uppercase tracking-wider text-xs border-l-2 border-red-500 pl-3">Victory</div>
+                      <p>Standard: First to 5 points. Last Citizen Standing & INTERLINKED: Eliminate all opponent cards.</p>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="text-white font-bold uppercase tracking-wider text-xs border-l-2 border-purple-500 pl-3">Engagement</div>
-                    <p>Alternating turns. Attacker selects the active Trait to challenge. Defender must counter with superior stats or rarity.</p>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-white font-bold uppercase tracking-wider text-xs border-l-2 border-red-500 pl-3">Victory</div>
-                    <p>First operator to 5 points achieves dominance. Numeric traits compare values; String traits compare item rarity.</p>
+
+                  {/* Game Modes */}
+                  <div className="border-t border-white/10 pt-6">
+                    <h3 className="text-white font-bold uppercase tracking-wider text-sm mb-4">Game Modes</h3>
+
+                    <div className="space-y-4">
+                      {/* Omnipresent */}
+                      <div className="bg-purple-500/5 border border-purple-500/20 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="text-purple-400 font-bold text-sm">🔮 OMNIPRESENT</div>
+                          <div className="text-purple-400/60 text-xs">• Standard Mode</div>
+                        </div>
+                        <p className="text-xs">Full battlefield awareness. All traits visible. Attacker selects trait, defender counters. Numeric traits compare values; string traits compare rarity. First to 5 points wins.</p>
+                      </div>
+
+                      {/* Chaotic */}
+                      <div className="bg-blue-500/5 border border-blue-500/20 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="text-blue-400 font-bold text-sm">⚡ CHAOTIC</div>
+                          <div className="text-blue-400/60 text-xs">• Limited Intel</div>
+                        </div>
+                        <p className="text-xs">Strength is the only visible metric. All other traits hidden. Pure power-based combat. Attacker chooses strength, defender must counter blind. First to 5 points wins.</p>
+                      </div>
+
+                      {/* Threat Intelligence */}
+                      <div className="bg-red-500/5 border border-red-500/20 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="text-red-400 font-bold text-sm">🎯 THREAT INTEL</div>
+                          <div className="text-red-400/60 text-xs">• Counter-Ops</div>
+                        </div>
+                        <p className="text-xs">Blind defense mechanism. Defender sees nothing until attack is declared. Attacker has full intel. Defender must counter without information. First to 5 points wins.</p>
+                      </div>
+
+                      {/* Last Citizen Standing */}
+                      <div className="bg-orange-500/5 border border-orange-500/20 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="text-orange-400 font-bold text-sm">💀 LAST CITIZEN</div>
+                          <div className="text-orange-400/60 text-xs">• Total Attrition</div>
+                        </div>
+                        <p className="text-xs">All 6 numeric traits fight simultaneously. Each trait: both sides take damage equal to opponent's value. Cards with 3+ traits at 0 are eliminated. Refresh phase every 10 turns: discard & draw. Last player with cards wins.</p>
+                      </div>
+
+                      {/* INTERLINKED */}
+                      <div className="bg-cyan-500/5 border border-cyan-500/20 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="text-cyan-400 font-bold text-sm">🔗 INTERLINKED</div>
+                          <div className="text-cyan-400/60 text-xs">• Trait-Based Warfare</div>
+                        </div>
+                        <p className="text-xs">All 12 traits fight simultaneously with score reduction. Each trait: winner keeps difference, loser gets 0. Cards with 6+ traits at 0 are eliminated. Refresh phase every 10 turns: discard & draw with fresh scores. Last player with cards wins.</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1448,7 +2154,7 @@ function App() {
             </div>
 
             {/* Turn Counter (Battle Only) */}
-            {gameMode === 'last-citizen-standing' && gamePhase === 'battle' && (
+            {(gameMode === 'last-citizen-standing' || gameMode === 'interlinked') && gamePhase === 'battle' && (
               <div className="bg-black/80  border border-white/10 px-4 py-2 rounded-xl shadow-lg flex items-center justify-between gap-4 w-full pointer-events-auto">
                 <span className="text-[10px] uppercase tracking-widest text-[#0090ff] font-bold">Turn</span>
                 <span className="text-lg font-light text-white tabular-nums leading-none">{turnCount}</span>
@@ -1476,14 +2182,39 @@ function App() {
             </div>
 
             {/* Discard Phase UI */}
-            {(validCitizens.length >= 24 || (isRefreshPhase && !playerRefreshDiscarded)) && (
+            {(gamePhase === 'discard' && turnCount === 0 && validCitizens.length >= 24) && (
               <div className="mt-36 w-full max-w-7xl mx-auto px-4">
                 {/* Big Gold "Discard 3 Cards" Message - Shows for 2 seconds */}
-                {showDiscardMessage && (
+                {showDiscardMessage && !isRefreshPhase && turnCount === 0 && (
                   <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
                     <div className="text-8xl font-bold uppercase tracking-widest text-yellow-400 drop-shadow-[0_0_30px_rgba(250,204,21,1)] animate-fade-in-out">
                       DISCARD 3 CARDS
                     </div>
+                  </div>
+                )}
+
+                {/* Refresh Phase Header & New Draw Display */}
+                {isRefreshPhase && (
+                  <div className="flex flex-col items-center mb-8">
+                    <h2 className="text-4xl font-bold text-yellow-400 mb-2">REFRESH PHASE</h2>
+                    <p className="text-xl text-blue-300 mb-6">Select a card from your hand to replace with the New Draw</p>
+
+                    {/* New Draw Preview */}
+                    {refreshDrawnCard && (
+                      <div className="flex flex-col items-center gap-2 animate-in zoom-in duration-500">
+                        <div className="text-orange-400 font-bold text-sm uppercase tracking-widest">Incoming Unit</div>
+                        <div className="w-32 h-32 bg-gray-900 rounded-xl overflow-hidden border-2 border-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.4)] relative group">
+                          <img
+                            src={`https://neo-tokyo.nyc3.cdn.digitaloceanspaces.com/s1Citizen/pngs/${refreshDrawnCard}.png`}
+                            alt="New Draw"
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute bottom-0 inset-x-0 bg-black/80 py-1 text-center">
+                            <span className="text-orange-400 font-bold text-xs">#{refreshDrawnCard}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -1510,7 +2241,7 @@ function App() {
         )}
 
         {selectedForDiscard !== null && (gamePhase === 'discard' || (isRefreshPhase && !playerRefreshDiscarded)) && !discardedCards.includes(selectedForDiscard) && (
-          <div className="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-50 p-4" onClick={() => setSelectedForDiscard(null)}>
+          <div className="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-50 p-4" onClick={() => !isRefreshPhase && setSelectedForDiscard(null)}>
             {/* Prompt Message for Refresh Phase */}
             {isRefreshPhase && (
               <div className="mb-8 text-center animate-in fade-in slide-in-from-top-4 duration-500">
@@ -1543,7 +2274,7 @@ function App() {
 
                 {/* Main Centered Card with Traits */}
                 <div className="bg-gradient-to-b from-gray-900 to-black border-4 border-[#0077cc] rounded-2xl w-full max-w-[320px] overflow-hidden shadow-2xl shadow-[#0055aa]/70 relative" onClick={(e) => e.stopPropagation()}>
-                  <button className="absolute top-2 right-3 text-[#4db8ff] text-2xl hover:text-white z-10 transition-colors" onClick={() => setSelectedForDiscard(null)}>×</button>
+                  {!isRefreshPhase && <button className="absolute top-2 right-3 text-[#4db8ff] text-2xl hover:text-white z-10 transition-colors" onClick={() => setSelectedForDiscard(null)}>×</button>}
                   <h3 className="text-sm font-bold text-[#4db8ff] text-center pt-2 pb-1">Citizen #{selectedForDiscard}</h3>
                   <div className="w-full aspect-square bg-black flex items-center justify-center border-b-4 border-[#0055aa]/50">
                     <img src={`https://neo-tokyo.nyc3.cdn.digitaloceanspaces.com/s1Citizen/pngs/${selectedForDiscard}.png`} alt={`Citizen #${selectedForDiscard}`} className="w-full h-full object-contain" />
@@ -1552,23 +2283,50 @@ function App() {
                     {(() => {
                       const traits = citizenTraits[selectedForDiscard!]
                       if (!traits) return <div className="text-white/50 text-center">Loading traits...</div>
-                      return (
-                        <>
-                          {[
-                            { name: 'Strength', value: traits.strength },
-                            { name: 'Intelligence', value: traits.intelligence },
-                            { name: 'Cool', value: traits.cool },
-                            { name: 'Tech Skill', value: traits.techSkill },
-                            { name: 'Attractiveness', value: traits.attractiveness },
-                            { name: 'Reward', value: parseFloat(traits.rewardRate) || 0 }
-                          ].map((trait, idx) => (
-                            <div key={idx} className="flex justify-between items-center text-sm">
-                              <span className="text-[#4db8ff] font-semibold uppercase tracking-wide text-xs">{trait.name}</span>
-                              <span className="text-white font-bold tabular-nums">{trait.value}</span>
-                            </div>
-                          ))}
-                        </>
-                      )
+
+                      // Only show numeric traits for Last Citizen Standing mode
+                      if (gameMode === 'last-citizen-standing') {
+                        return (
+                          <>
+                            {[
+                              { name: 'Strength', value: traits.strength },
+                              { name: 'Intelligence', value: traits.intelligence },
+                              { name: 'Cool', value: traits.cool },
+                              { name: 'Tech Skill', value: traits.techSkill },
+                              { name: 'Attractiveness', value: traits.attractiveness },
+                              { name: 'Reward', value: parseFloat(traits.rewardRate) || 0 }
+                            ].map((trait, idx) => (
+                              <div key={idx} className="flex justify-between items-center text-sm">
+                                <span className="text-[#4db8ff] font-semibold uppercase tracking-wide text-xs">{trait.name}</span>
+                                <span className="text-white font-bold tabular-nums">{trait.value}</span>
+                              </div>
+                            ))}
+                          </>
+                        )
+                      }
+
+                      // For INTERLINKED mode, show trait values in 3×4 grid (same as selected card view)
+                      if (gameMode === 'interlinked') {
+                        const availableTraits = getAvailableTraits()
+
+                        return (
+                          <div className="grid grid-cols-3 gap-1 text-center">
+                            {availableTraits.map(({ label, value: traitKey, key }) => {
+                              const value = traits[traitKey as keyof CitizenTraits]
+                              return (
+                                <div key={label} className="bg-gray-800/70 border border-[#0055aa]/40 rounded p-1 h-[45px] flex flex-col justify-center opacity-90 transition-all">
+                                  <div className="text-[#0090ff] font-semibold leading-tight text-[8px] tracking-tighter uppercase">{label}</div>
+                                  <div className={`text-[11px] font-bold leading-tight overflow-hidden text-ellipsis line-clamp-2 ${isUltraRareTrait(key, value) ? 'text-yellow-400' : isRareTrait(key, value) ? 'text-purple-300' : 'text-white/90'}`}>
+                                    {value}
+                                  </div>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        )
+                      }
+
+                      return null
                     })()}
                   </div>
                 </div>
@@ -1596,7 +2354,7 @@ function App() {
                   className="btn-premium-red px-8 py-4 text-3xl font-bold text-white rounded-xl transition-all"
                   onClick={(e) => { e.stopPropagation(); handleDiscard(); }}
                 >
-                  DISCARD
+                  {isRefreshPhase ? 'DISCARD' : 'DISCARD'}
                 </button>
                 <div className="text-2xl font-bold text-[#4db8ff]">[{isRefreshPhase ? '0/1' : `${discardedCards.length}/3`}]</div>
               </div>
@@ -1617,7 +2375,7 @@ function App() {
           </div>
         )}
 
-        {gamePhase === 'battle' && (
+        {gamePhase === 'battle' && !isRefreshPhase && (
           <div className="fixed inset-0 flex flex-col">
             {/* Phase 12: Persistent Card Loader - Always active for new cards */}
             <div className="hidden">
@@ -1697,7 +2455,7 @@ function App() {
               <div className="col-span-3 flex flex-col items-start justify-center gap-8 pl-8 h-full">
 
 
-                {isTargeting && !pendingTarget && (
+                {isTargeting && !pendingTarget && isPlayerTurn && (
                   <div className="fixed top-1/2 left-8 -translate-y-1/2 z-[50] bg-gray-900/90 border border-red-500/50  rounded-2xl p-6 shadow-2xl animate-in fade-in slide-in-from-left-4 duration-500 w-[240px]">
                     <div className="text-center">
                       <div className="text-red-400 text-[10px] font-black mb-2 uppercase tracking-widest opacity-70">Action Required</div>
@@ -1732,7 +2490,7 @@ function App() {
                           <span className="text-[#0090ff] font-black text-lg tracking-tighter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">#{playerBattleCard}</span>
                         </div>
 
-                        {gameMode === 'last-citizen-standing' && isTargeting && !pendingTarget && isPlayerTurn && (
+                        {(gameMode === 'last-citizen-standing' || gameMode === 'interlinked') && isTargeting && !pendingTarget && isPlayerTurn && (
                           <div className="absolute inset-0 bg-black/85 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center  cursor-pointer"
                             onClick={(e) => { e.stopPropagation(); setPlayerBattleCard(null); setIsTargeting(false); }}
                           >
@@ -1793,6 +2551,114 @@ function App() {
             </div>
 
             {/* Overlays: Absolute within Grid Container */}
+            {battleLog && !gameOver && (
+              <div className="fixed inset-0 z-[160] flex items-center justify-center bg-black/95 animate-in fade-in duration-300" onClick={handleReportClose}>
+                <div className="relative w-full max-w-7xl mx-4 bg-[#050505] border border-white/10 rounded-[2rem] shadow-2xl p-10 flex flex-col items-center max-h-[90vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+
+                  {/* Header */}
+                  <div className="text-center mb-6 shrink-0">
+                    <div className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em] mb-2">Engagement Analysis</div>
+                    <h2 className="text-3xl md:text-5xl font-black text-white italic tracking-tighter">BATTLE REPORT</h2>
+                  </div>
+
+                  {/* Main Content Info */}
+                  <div className="flex flex-col md:flex-row items-center justify-center w-full gap-8 md:gap-16 grow overflow-hidden">
+
+                    {/* LEFT SIDE: Player Card */}
+                    <div className="hidden md:flex flex-col items-center shrink-0">
+                      <div className="w-48 h-64 bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_30px_-5px_rgba(0,144,255,0.3)] ring-1 ring-[#0090ff]/30 relative mb-4">
+                        <img
+                          src={`https://neo-tokyo.nyc3.cdn.digitaloceanspaces.com/s1Citizen/pngs/${playerBattleCard}.png`}
+                          alt="Player"
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-8 text-center">
+                          <div className="text-[#0090ff] font-bold text-lg tracking-widest">#{playerBattleCard}</div>
+                        </div>
+                      </div>
+                      <div className="text-[#0090ff] text-xs font-bold tracking-widest uppercase">You</div>
+                    </div>
+
+                    {/* CENTER: Battle Log Grid */}
+                    <div className="flex-1 w-full max-w-3xl overflow-y-auto pr-2 custom-scrollbar pb-24">
+                      {/* Grid Header */}
+                      <div className="grid grid-cols-5 gap-4 text-[9px] uppercase tracking-widest font-bold text-white/30 border-b border-white/10 pb-2 mb-2 sticky top-0 bg-[#050505] z-10">
+                        <div className="text-right text-[#0090ff]">Trait</div>
+                        <div className="text-right text-cyan-100/50">Value</div>
+                        <div className="text-center text-white/50">Outcome</div>
+                        <div className="text-left text-red-100/50">Value</div>
+                        <div className="text-left text-red-500">Trait</div>
+                      </div>
+
+                      {/* Grid Rows */}
+                      <div className="space-y-1 pt-8">
+                        {battleLog.map((log, i) => (
+                          <div key={i} className="grid grid-cols-5 gap-4 items-center py-1 border-b border-white/5 hover:bg-white/5 transition-colors group">
+                            {/* Col 1: Player Trait Label */}
+                            <div className={`text-right text-[10px] font-bold uppercase tracking-wider ${log.winner === 'player' ? 'text-[#0090ff]' : 'text-white/40'}`}>
+                              {log.trait}
+                            </div>
+
+                            {/* Col 2: Player Value */}
+                            <div className={`text-right font-medium tabular-nums text-sm truncate ${log.winner === 'player' ? 'text-white' : 'text-white/30'}`}>
+                              {log.pVal}
+                            </div>
+
+                            {/* Col 3: Outcome (Text) */}
+                            <div className="text-center flex justify-center items-center">
+                              {log.winner === 'player' && <span className="text-[#0090ff] text-[10px] font-black uppercase tracking-widest bg-[#0090ff]/10 px-2 py-1 rounded">BEATS</span>}
+                              {log.winner === 'opponent' && <span className="text-red-500 text-[10px] font-black uppercase tracking-widest bg-red-500/10 px-2 py-1 rounded">LOSES TO</span>}
+                              {log.winner === 'tie' && <span className="text-white/20 text-[10px] font-bold uppercase tracking-widest">TIES</span>}
+                            </div>
+
+                            {/* Col 4: Opponent Value */}
+                            <div className={`text-left font-medium tabular-nums text-sm truncate ${log.winner === 'opponent' ? 'text-white' : 'text-white/30'}`}>
+                              {log.oVal}
+                            </div>
+
+                            {/* Col 5: Opponent Trait Label */}
+                            <div className={`text-left text-[10px] font-bold uppercase tracking-wider ${log.winner === 'opponent' ? 'text-red-500' : 'text-white/40'}`}>
+                              {log.trait}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* RIGHT SIDE: Opponent Card */}
+                    <div className="hidden md:flex flex-col items-center shrink-0">
+                      <div className="w-48 h-64 bg-gray-900 rounded-2xl overflow-hidden shadow-[0_0_30px_-5px_rgba(239,68,68,0.3)] ring-1 ring-red-500/30 relative mb-4">
+                        <img
+                          src={`https://neo-tokyo.nyc3.cdn.digitaloceanspaces.com/s1Citizen/pngs/${opponentBattleCard}.png`}
+                          alt="Opponent"
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-8 text-center">
+                          <div className="text-red-400 font-bold text-lg tracking-widest">#{opponentBattleCard}</div>
+                        </div>
+                      </div>
+                      <div className="text-red-400 text-xs font-bold tracking-widest uppercase">Enemy</div>
+                    </div>
+
+                  </div>
+
+                  {/* Auto Close Button */}
+                  <div className="w-full max-w-md mt-6 shrink-0">
+                    <button
+                      onClick={handleReportClose}
+                      className="w-full bg-white text-black font-black uppercase tracking-widest py-4 rounded-xl hover:bg-gray-200 transition-colors relative overflow-hidden group shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)]"
+                    >
+                      <span className="relative z-10 group-hover:scale-105 transition-transform inline-block">Close Report ({reportTimer}s)</span>
+                      <div
+                        className="absolute inset-0 bg-gray-300 z-0 transition-none ease-linear origin-left opacity-30"
+                        style={{ width: `${(reportTimer / 10) * 100}%`, transition: 'width 1s linear' }}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {showBattleAnimation && (
               <div className="absolute inset-0 z-[100] flex items-center justify-center pointer-events-none">
                 <div className="text-7xl font-black text-white italic tracking-tighter animate-clash-vibrate drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]">
@@ -1823,13 +2689,15 @@ function App() {
                   {/* Header: Minimalist & Clean */}
                   <div className="text-center mb-10">
                     <div className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em] mb-3">Conflict Initiated</div>
-                    <div className="text-4xl md:text-5xl font-light tracking-tight text-white mb-2">
+                    <div className="text-4xl md:text-5xl font-black text-white italic tracking-tighter mb-2">
                       {isPlayerTurn ? 'CONFIRM ATTACK' : 'INCOMING ATTACK'}
                     </div>
                     {!isPlayerTurn && (
                       <div className="text-red-400/80 text-sm font-medium tracking-wide">Opponent is targeting your citizen</div>
                     )}
                   </div>
+
+                  {/* INTERLINKED MODE: Use side-by-side display instead of top grid */}
 
                   {/* Main Interaction Area: Wide Landscape Grid */}
                   <div className="flex flex-col md:flex-row items-center justify-center w-full gap-8 md:gap-16">
@@ -1858,43 +2726,82 @@ function App() {
                       </div>
 
                       {/* Traits Panel (Right of Card) */}
-                      <div className="w-48 space-y-3">
-                        {citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!] ? (
+                      <div className="w-56 space-y-2">
+                        {gameMode === 'interlinked' ? (
                           <>
-                            {[
-                              { label: 'Strength', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].strength },
-                              { label: 'Intelligence', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].intelligence },
-                              { label: 'Cool', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].cool },
-                              { label: 'Tech Skill', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].techSkill },
-                              { label: 'Attractiveness', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].attractiveness },
-                            ].map((stat) => (
-                              <div key={stat.label} className="flex justify-between items-center group">
-                                <span className="text-white/40 text-sm font-medium group-hover:text-white/70 transition-colors">{stat.label}</span>
-                                <span className="text-white text-lg font-light tabular-nums">{stat.val}</span>
-                              </div>
-                            ))}
+                            {(() => {
+                              const traits: Array<{ key: keyof CardTraitScores, label: string }> = [
+                                { key: 'race', label: 'Race' },
+                                { key: 'class', label: 'Class' },
+                                { key: 'eyes', label: 'Eyes' },
+                                { key: 'ability', label: 'Ability' },
+                                { key: 'additionalItem', label: 'Item' },
+                                { key: 'helm', label: 'Helm' },
+                                { key: 'location', label: 'Location' },
+                                { key: 'vehicle', label: 'Vehicle' },
+                                { key: 'apparel', label: 'Apparel' },
+                                { key: 'rewardRate', label: 'Reward' },
+                                { key: 'weapon', label: 'Weapon' },
+                                { key: 'strength', label: 'Strength' }
+                              ]
 
-                            <div className="h-px bg-white/10 my-4" />
+                              // Get scores for reliable rendering logic if needed, but primarily we just want to list values first
+                              const cardId = isPlayerTurn ? playerBattleCard! : opponentBattleCard!
+                              const pTraits = citizenTraits[cardId]
+                              let pScores = cardTraitScores[cardId]
+                              if (!pScores && pTraits) pScores = getInitialTraitScores(cardId)
 
-                            <div className="flex justify-between items-center">
-                              <span className={`text-sm font-bold uppercase tracking-wider ${isPlayerTurn ? 'text-[#0090ff]' : 'text-red-400'}`}>Reward</span>
-                              <span className={`text-xl font-bold tabular-nums ${isPlayerTurn ? 'text-[#0090ff]' : 'text-red-400'}`}>
-                                {citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].rewardRate || '-'}
-                              </span>
-                            </div>
-                            <div className="flex justify-between items-center mt-1 opacity-60">
-                              <span className="text-xs uppercase tracking-wider text-white/40">Total Power</span>
-                              <span className="text-sm font-medium text-white/60 tabular-nums">
-                                {(citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].strength || 0) +
-                                  (citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].intelligence || 0) +
-                                  (citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].cool || 0) +
-                                  (citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].techSkill || 0) +
-                                  (citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].attractiveness || 0)}
-                              </span>
-                            </div>
+                              if (!pTraits) return <div className="text-white/20 text-sm">Loading...</div>
+
+                              return traits.map((stat) => (
+                                <div key={stat.key} className="flex justify-between items-center group h-5">
+                                  <span className={`text-[10px] font-bold uppercase tracking-wider ${isPlayerTurn ? 'text-[#0090ff]' : 'text-red-400'}`}>{stat.label}</span>
+                                  <span className="text-white text-xs font-bold tabular-nums text-right truncate max-w-[100px]" title={String(pTraits[stat.key as keyof CitizenTraits] || '')}>
+                                    {pTraits[stat.key as keyof CitizenTraits]}
+                                  </span>
+                                </div>
+                              ))
+                            })()}
                           </>
                         ) : (
-                          <div className="text-white/20 text-sm">Loading data...</div>
+                          // Standard Mode Traits
+                          citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!] ? (
+                            <>
+                              {[
+                                { label: 'Strength', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].strength },
+                                { label: 'Intelligence', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].intelligence },
+                                { label: 'Cool', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].cool },
+                                { label: 'Tech Skill', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].techSkill },
+                                { label: 'Attractiveness', val: citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].attractiveness },
+                              ].map((stat) => (
+                                <div key={stat.label} className="flex justify-between items-center group">
+                                  <span className="text-white/40 text-sm font-medium group-hover:text-white/70 transition-colors">{stat.label}</span>
+                                  <span className="text-white text-lg font-light tabular-nums">{stat.val}</span>
+                                </div>
+                              ))}
+
+                              <div className="h-px bg-white/10 my-4" />
+
+                              <div className="flex justify-between items-center">
+                                <span className={`text-sm font-bold uppercase tracking-wider ${isPlayerTurn ? 'text-[#0090ff]' : 'text-red-400'}`}>Reward</span>
+                                <span className={`text-xl font-bold tabular-nums ${isPlayerTurn ? 'text-[#0090ff]' : 'text-red-400'}`}>
+                                  {citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].rewardRate || '-'}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center mt-1 opacity-60">
+                                <span className="text-xs uppercase tracking-wider text-white/40">Total Power</span>
+                                <span className="text-sm font-medium text-white/60 tabular-nums">
+                                  {(citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].strength || 0) +
+                                    (citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].intelligence || 0) +
+                                    (citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].cool || 0) +
+                                    (citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].techSkill || 0) +
+                                    (citizenTraits[isPlayerTurn ? playerBattleCard! : opponentBattleCard!].attractiveness || 0)}
+                                </span>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="text-white/20 text-sm">Loading data...</div>
+                          )
                         )}
                       </div>
                     </div>
@@ -1908,96 +2815,129 @@ function App() {
                     {/* Layout: [Traits] [Card] (Mirrored) */}
                     <div className="flex flex-row items-center gap-8">
                       {/* Traits Panel (Left of Card) */}
-                      <div className="w-48 space-y-3 text-right">
-                        {citizenTraits[pendingTarget] ? (
+                      <div className="w-56 space-y-2 text-right">
+                        {gameMode === 'interlinked' ? (
                           <>
-                            {[
-                              { label: 'Strength', val: citizenTraits[pendingTarget].strength },
-                              { label: 'Intelligence', val: citizenTraits[pendingTarget].intelligence },
-                              { label: 'Cool', val: citizenTraits[pendingTarget].cool },
-                              { label: 'Tech Skill', val: citizenTraits[pendingTarget].techSkill },
-                              { label: 'Attractiveness', val: citizenTraits[pendingTarget].attractiveness },
-                            ].map((stat) => (
-                              <div key={stat.label} className="flex justify-between items-center flex-row-reverse group">
-                                <span className="text-white/40 text-sm font-medium group-hover:text-white/70 transition-colors">{stat.label}</span>
-                                <span className="text-white text-lg font-light tabular-nums">{stat.val}</span>
-                              </div>
-                            ))}
+                            {(() => {
+                              const traits: Array<{ key: keyof CardTraitScores, label: string }> = [
+                                { key: 'race', label: 'Race' },
+                                { key: 'class', label: 'Class' },
+                                { key: 'eyes', label: 'Eyes' },
+                                { key: 'ability', label: 'Ability' },
+                                { key: 'additionalItem', label: 'Item' },
+                                { key: 'helm', label: 'Helm' },
+                                { key: 'location', label: 'Location' },
+                                { key: 'vehicle', label: 'Vehicle' },
+                                { key: 'apparel', label: 'Apparel' },
+                                { key: 'rewardRate', label: 'Reward' },
+                                { key: 'weapon', label: 'Weapon' },
+                                { key: 'strength', label: 'Strength' }
+                              ]
 
-                            <div className="h-px bg-white/10 my-4" />
+                              // Use pendingTarget for traits, as we are confirming attack
+                              const cardId = pendingTarget!
+                              const oTraits = citizenTraits[cardId]
 
-                            <div className="flex justify-between items-center flex-row-reverse">
-                              <span className={`text-sm font-bold uppercase tracking-wider ${isPlayerTurn ? 'text-red-400' : 'text-[#0090ff]'}`}>Reward</span>
-                              <span className={`text-xl font-bold tabular-nums ${isPlayerTurn ? 'text-red-400' : 'text-[#0090ff]'}`}>
-                                {citizenTraits[pendingTarget].rewardRate || '-'}
-                              </span>
-                            </div>
-                            <div className="flex justify-between items-center flex-row-reverse mt-1 opacity-60">
-                              <span className="text-xs uppercase tracking-wider text-white/40">Total Power</span>
-                              <span className="text-sm font-medium text-white/60 tabular-nums">
-                                {(citizenTraits[pendingTarget].strength || 0) +
-                                  (citizenTraits[pendingTarget].intelligence || 0) +
-                                  (citizenTraits[pendingTarget].cool || 0) +
-                                  (citizenTraits[pendingTarget].techSkill || 0) +
-                                  (citizenTraits[pendingTarget].attractiveness || 0)}
-                              </span>
-                            </div>
+                              if (!oTraits) return <div className="text-white/20 text-sm">Loading...</div>
+
+                              return traits.map((stat) => (
+                                <div key={stat.key} className="flex justify-between items-center flex-row-reverse group h-5">
+                                  <span className={`text-[10px] font-bold uppercase tracking-wider ${isPlayerTurn ? 'text-red-400' : 'text-[#0090ff]'}`}>{stat.label}</span>
+                                  <span className="text-white text-xs font-bold tabular-nums truncate max-w-[100px]" title={String(oTraits[stat.key as keyof CitizenTraits] || '')}>
+                                    {oTraits[stat.key as keyof CitizenTraits]}
+                                  </span>
+                                </div>
+                              ))
+                            })()}
                           </>
                         ) : (
-                          <div className="text-white/20 text-sm">Loading data...</div>
+                          // Standard LCS Mode Traits
+                          citizenTraits[pendingTarget] ? (
+                            <>
+                              {[
+                                { label: 'Strength', val: citizenTraits[pendingTarget].strength },
+                                { label: 'Intelligence', val: citizenTraits[pendingTarget].intelligence },
+                                { label: 'Cool', val: citizenTraits[pendingTarget].cool },
+                                { label: 'Tech Skill', val: citizenTraits[pendingTarget].techSkill },
+                                { label: 'Attractiveness', val: citizenTraits[pendingTarget].attractiveness },
+                              ].map((stat) => (
+                                <div key={stat.label} className="flex justify-between items-center flex-row-reverse group">
+                                  <span className="text-white/40 text-sm font-medium group-hover:text-white/70 transition-colors">{stat.label}</span>
+                                  <span className="text-white text-lg font-light tabular-nums">{stat.val}</span>
+                                </div>
+                              ))}
+
+                              <div className="h-px bg-white/10 my-4" />
+
+                              <div className="flex justify-between items-center flex-row-reverse">
+                                <span className={`text-sm font-bold uppercase tracking-wider ${isPlayerTurn ? 'text-red-400' : 'text-[#0090ff]'}`}>Reward</span>
+                                <span className={`text-xl font-bold tabular-nums ${isPlayerTurn ? 'text-red-400' : 'text-[#0090ff]'}`}>
+                                  {citizenTraits[pendingTarget].rewardRate || '-'}
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center flex-row-reverse mt-1 opacity-60">
+                                <span className="text-xs uppercase tracking-wider text-white/40">Total Power</span>
+                                <span className="text-sm font-medium text-white/60 tabular-nums">
+                                  {(citizenTraits[pendingTarget].strength || 0) +
+                                    (citizenTraits[pendingTarget].intelligence || 0) +
+                                    (citizenTraits[pendingTarget].cool || 0) +
+                                    (citizenTraits[pendingTarget].techSkill || 0) +
+                                    (citizenTraits[pendingTarget].attractiveness || 0)}
+                                </span>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="text-white/20 text-sm">Loading data...</div>
+                          )
                         )}
                       </div>
 
                       {/* Card Display */}
-                      {/* Card Display with Navigation Arrows */}
-                      <div className="flex items-center gap-4">
-                        {/* Left Arrow - Only for Attacker (Player Turn) and modifying Target */}
-                        {isPlayerTurn && (
-                          <button
-                            className="text-[#0090ff] text-4xl hover:text-white hover:scale-110 transition-all font-bold opacity-50 hover:opacity-100"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const currentIndex = opponentDeck.findIndex(id => id === pendingTarget);
-                              const prevIndex = currentIndex > 0 ? currentIndex - 1 : opponentDeck.length - 1;
-                              setPendingTarget(opponentDeck[prevIndex]);
-                            }}
-                          >
-                            ‹
-                          </button>
-                        )}
-
-                        <div className="flex flex-col items-center">
-                          <div className={`w-56 h-72 bg-gray-900 rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 relative group
+                      <div className="flex flex-col items-center gap-4">
+                        <div className={`w-56 h-72 bg-gray-900 rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 relative group
                             ${isPlayerTurn ? 'shadow-[0_20px_60px_-15px_rgba(239,68,68,0.3)] ring-1 ring-red-500/20' : 'shadow-[0_20px_60px_-15px_rgba(0,144,255,0.3)] ring-1 ring-white/10'}`}>
-                            <img
-                              src={`https://neo-tokyo.nyc3.cdn.digitaloceanspaces.com/s1Citizen/pngs/${pendingTarget}.png`}
-                              alt="Target"
-                              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                            />
-                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-12">
-                              <div className={`text-center font-bold text-lg tracking-widest ${isPlayerTurn ? 'text-red-400' : 'text-[#0090ff]'}`}>
-                                #{pendingTarget}
-                              </div>
+                          <img
+                            src={`https://neo-tokyo.nyc3.cdn.digitaloceanspaces.com/s1Citizen/pngs/${pendingTarget}.png`}
+                            alt="Target"
+                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                          />
+                          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-12">
+                            <div className={`text-center font-bold text-lg tracking-widest ${isPlayerTurn ? 'text-red-400' : 'text-[#0090ff]'}`}>
+                              #{pendingTarget}
                             </div>
-                          </div>
-                          <div className={`mt-4 text-xs font-bold tracking-widest uppercase ${isPlayerTurn ? 'text-red-400' : 'text-[#0090ff]'}`}>
-                            {isPlayerTurn ? 'Target' : 'Defender'}
                           </div>
                         </div>
 
-                        {/* Right Arrow - Only for Attacker (Player Turn) and modifying Target */}
+                        <div className={`text-xs font-bold tracking-widest uppercase ${isPlayerTurn ? 'text-red-400' : 'text-[#0090ff]'}`}>
+                          {isPlayerTurn ? 'Target' : 'Defender'}
+                        </div>
+
+                        {/* Navigation Arrows - Moved Below Card */}
                         {isPlayerTurn && (
-                          <button
-                            className="text-[#0090ff] text-4xl hover:text-white hover:scale-110 transition-all font-bold opacity-50 hover:opacity-100"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const currentIndex = opponentDeck.findIndex(id => id === pendingTarget);
-                              const nextIndex = currentIndex < opponentDeck.length - 1 ? currentIndex + 1 : 0;
-                              setPendingTarget(opponentDeck[nextIndex]);
-                            }}
-                          >
-                            ›
-                          </button>
+                          <div className="flex items-center gap-8 mt-2">
+                            <button
+                              className="text-red-500 text-5xl hover:text-red-400 hover:scale-110 transition-all font-bold opacity-70 hover:opacity-100 leading-none pb-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const currentIndex = opponentDeck.findIndex(id => id === pendingTarget);
+                                const prevIndex = currentIndex > 0 ? currentIndex - 1 : opponentDeck.length - 1;
+                                setPendingTarget(opponentDeck[prevIndex]);
+                              }}
+                            >
+                              ‹
+                            </button>
+                            <button
+                              className="text-red-500 text-5xl hover:text-red-400 hover:scale-110 transition-all font-bold opacity-70 hover:opacity-100 leading-none pb-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const currentIndex = opponentDeck.findIndex(id => id === pendingTarget);
+                                const nextIndex = currentIndex < opponentDeck.length - 1 ? currentIndex + 1 : 0;
+                                setPendingTarget(opponentDeck[nextIndex]);
+                              }}
+                            >
+                              ›
+                            </button>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -2014,30 +2954,7 @@ function App() {
                             setPendingTarget(null)
                             setIsTargeting(false)
                             setHoveredTargetRect(null)
-                            setShowBattleAnimation(true)
-                            setTimeout(() => {
-                              setShowBattleAnimation(false)
-                              if (playerBattleCard && pendingTarget) {
-                                const pTraits = citizenTraits[playerBattleCard]
-                                const oTraits = citizenTraits[pendingTarget]
-                                if (pTraits && oTraits) {
-                                  const pTotal = (pTraits.strength || 0) + (pTraits.intelligence || 0) + (pTraits.cool || 0) + (pTraits.techSkill || 0) + (pTraits.attractiveness || 0)
-                                  const oTotal = (oTraits.strength || 0) + (oTraits.intelligence || 0) + (oTraits.cool || 0) + (oTraits.techSkill || 0) + (oTraits.attractiveness || 0)
-                                  const playerWins = pTotal >= oTotal
-                                  setBattleResult({
-                                    winner: playerWins ? 'player' : 'opponent',
-                                    message: playerWins ? `Victory! Total power ${pTotal} > ${oTotal}` : `Defeat. Total power ${pTotal} < ${oTotal}`
-                                  })
-                                  if (playerWins) {
-                                    setPlayerScore(prev => prev + 1)
-                                    setOpponentDeck(prev => prev.filter((id: string) => id !== pendingTarget))
-                                  } else {
-                                    setOpponentScore(prev => prev + 1)
-                                    setPlayerDeck(prev => prev.filter((id: string) => id !== playerBattleCard))
-                                  }
-                                }
-                              }
-                            }, 1500)
+                            // Animation and resolution handled by useEffect
                           }}
                         >
                           Initiate Clash
@@ -2068,13 +2985,13 @@ function App() {
 
 
             {/* Opponent Summon Buttons - Mirrored at Top */}
-            {gameMode === 'last-citizen-standing' && !isTargeting && (
+            {(gameMode === 'last-citizen-standing' || gameMode === 'interlinked') && !isTargeting && (
               <div className="fixed top-[150px] left-0 right-0 z-[60] flex justify-center items-center pointer-events-none">
                 <div className="pointer-events-auto flex items-center gap-4 opacity-40">
 
                   {/* Dark Lord (Opponent) */}
                   <div className="group relative flex flex-col items-center">
-                    <div className="w-20 h-20 rounded-[1.2rem] overflow-hidden border border-white/10 shadow-lg transition-all duration-300 relative bg-black/80 z-10">
+                    <div className="w-[70px] h-[70px] rounded-2xl overflow-hidden border border-white/10 shadow-lg transition-all duration-300 relative bg-black/80 z-10">
                       <img src="https://pbs.twimg.com/tweet_video_thumb/FSRyHOVXIAAQP3M.jpg" alt="Dark Lord" className="w-full h-full object-cover opacity-90" />
                       <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-30" />
                     </div>
@@ -2089,7 +3006,7 @@ function App() {
 
                   {/* Angie (Opponent) */}
                   <div className="group relative flex flex-col items-center">
-                    <div className="w-20 h-20 rounded-[1.2rem] overflow-hidden border border-white/10 shadow-lg transition-all duration-300 relative bg-black/70 z-10">
+                    <div className="w-[70px] h-[70px] rounded-2xl overflow-hidden border border-white/10 shadow-lg transition-all duration-300 relative bg-black/70 z-10">
                       <img src="https://neotokyo.codes/assets/img/Ar3mt.png" alt="Angie" className="w-full h-full object-contain p-1 opacity-90" />
                       <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-30" />
                     </div>
@@ -2104,7 +3021,7 @@ function App() {
 
                   {/* Angelic Overlord (Opponent) */}
                   <div className="group relative flex flex-col items-center">
-                    <div className="w-20 h-20 rounded-[1.2rem] overflow-hidden border border-white/10 shadow-lg transition-all duration-300 relative bg-black/80 z-10">
+                    <div className="w-[70px] h-[70px] rounded-2xl overflow-hidden border border-white/10 shadow-lg transition-all duration-300 relative bg-black/80 z-10">
                       <img src="https://neotokyo.codes/_next/image?url=https%3A%2F%2Fneo-tokyo.nyc3.cdn.digitaloceanspaces.com%2Fs1Citizen%2Fpngs%2F2350.png&w=1920&q=75" alt="Angelic" className="w-full h-full object-cover opacity-90" />
                       <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-30" />
                     </div>
@@ -2122,13 +3039,13 @@ function App() {
             )}
 
             {/* Summon Buttons - Apple-style Floating Design */}
-            {gameMode === 'last-citizen-standing' && !isTargeting && (
+            {(gameMode === 'last-citizen-standing' || gameMode === 'interlinked') && isPlayerTurn && !isTargeting && !isRefreshPhase && (
               <div className="fixed bottom-[150px] left-0 right-0 z-[60] flex justify-center items-center pointer-events-none">
                 <div className="pointer-events-auto flex items-center gap-4">
 
                   {/* Dark Lord */}
                   <div className="group relative flex flex-col items-center cursor-pointer" onClick={() => setShowDarkLordSelection(true)}>
-                    <div className="w-20 h-20 rounded-[1.2rem] overflow-hidden border border-white/10 group-hover:border-purple-500/50 shadow-lg group-hover:shadow-[0_0_35px_rgba(168,85,247,0.5)] transition-all duration-300 relative bg-black/80 group-hover:scale-110 ease-out z-10">
+                    <div className="w-[70px] h-[70px] rounded-2xl overflow-hidden border border-white/10 group-hover:border-purple-500/50 shadow-lg group-hover:shadow-[0_0_35px_rgba(168,85,247,0.5)] transition-all duration-300 relative bg-black/80 group-hover:scale-110 ease-out z-10">
                       <img src="https://pbs.twimg.com/tweet_video_thumb/FSRyHOVXIAAQP3M.jpg" alt="Dark Lord" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                       <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
@@ -2143,7 +3060,7 @@ function App() {
 
                   {/* Angie */}
                   <div className="group relative flex flex-col items-center cursor-pointer" onClick={() => { /* generic */ }}>
-                    <div className="w-20 h-20 rounded-[1.2rem] overflow-hidden border border-white/10 group-hover:border-yellow-500/50 shadow-lg group-hover:shadow-[0_0_35px_rgba(234,179,8,0.5)] transition-all duration-300 relative bg-black/70 group-hover:scale-110 ease-out z-10">
+                    <div className="w-[70px] h-[70px] rounded-2xl overflow-hidden border border-white/10 group-hover:border-yellow-500/50 shadow-lg group-hover:shadow-[0_0_35px_rgba(234,179,8,0.5)] transition-all duration-300 relative bg-black/70 group-hover:scale-110 ease-out z-10">
                       <img src="https://neotokyo.codes/assets/img/Ar3mt.png" alt="Angie" className="w-full h-full object-contain p-1 opacity-90 group-hover:opacity-100 transition-opacity" />
                       <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
@@ -2158,7 +3075,7 @@ function App() {
 
                   {/* Angelic Overlord */}
                   <div className="group relative flex flex-col items-center cursor-pointer" onClick={() => setShowAngelicSelection(true)}>
-                    <div className="w-20 h-20 rounded-[1.2rem] overflow-hidden border border-white/10 group-hover:border-blue-500/50 shadow-lg group-hover:shadow-[0_0_35px_rgba(59,130,246,0.5)] transition-all duration-300 relative bg-black/80 group-hover:scale-110 ease-out z-10">
+                    <div className="w-[70px] h-[70px] rounded-2xl overflow-hidden border border-white/10 group-hover:border-blue-500/50 shadow-lg group-hover:shadow-[0_0_35px_rgba(59,130,246,0.5)] transition-all duration-300 relative bg-black/80 group-hover:scale-110 ease-out z-10">
                       <img src="https://neotokyo.codes/_next/image?url=https%3A%2F%2Fneo-tokyo.nyc3.cdn.digitaloceanspaces.com%2Fs1Citizen%2Fpngs%2F2350.png&w=1920&q=75" alt="Angelic" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
                       <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
@@ -2192,8 +3109,8 @@ function App() {
                     key={cardId}
                     data-card-id={cardId}
                     className={`w-32 bg-gray-900/70 border rounded-lg overflow-hidden shadow-lg transition-all ${
-                      // Disable if: targeting mode OR (not player turn AND NOT refresh phase)
-                      gameMode === 'last-citizen-standing' && (isTargeting || (!isPlayerTurn && !isRefreshPhase)) ? 'opacity-40 cursor-not-allowed pointer-events-none' : 'cursor-pointer'
+                      // Disable if: targeting mode OR battle result showing OR (not player turn AND NOT refresh phase)
+                      (isTargeting || battleResult !== null || (!isPlayerTurn && !isRefreshPhase)) ? 'opacity-20 cursor-not-allowed pointer-events-none' : 'cursor-pointer'
                       } ${selectedBattleCard === cardId ? 'border-[#0090ff] shadow-[#0090ff]/50' : `border-[#0077cc]/40 ${isPlayerTurn || isRefreshPhase ? 'hover:border-yellow-500 hover:shadow-yellow-500/50' : ''}`}`}
                     onMouseEnter={() => {
                       // Clear any pending timeout when entering a new card
@@ -2230,12 +3147,12 @@ function App() {
 
 
                       // Handling Discard Selection in Refresh Phase
-                      if (gameMode === 'last-citizen-standing' && isRefreshPhase) {
+                      if ((gameMode === 'last-citizen-standing' || gameMode === 'interlinked') && isRefreshPhase) {
                         setSelectedForDiscard(cardId);
                         return;
                       }
 
-                      if (gameMode === 'last-citizen-standing' && (isTargeting || !isPlayerTurn)) return;
+                      if (isTargeting || (!isPlayerTurn && !isRefreshPhase)) return;
 
                       setHoveredDeckCard(null);
                       setPlayerBattleCard(cardId);
@@ -2290,20 +3207,41 @@ function App() {
                   const traits = citizenTraits[hoveredDeckCard]
                   if (!traits) return <div className="text-[#4db8ff] text-[10px] text-center py-4 italic">Loading data stream...</div>
 
+                  // Compare current scores vs original max scores
+                  let currentScores: CardTraitScores | null = null
+                  let originalScores: CardTraitScores | null = null
+
+                  if (gameMode === 'interlinked') {
+                    currentScores = cardTraitScores[hoveredDeckCard]
+                    originalScores = getInitialTraitScores(hoveredDeckCard)
+                  }
+
                   const availableTraits = getAvailableTraits()
 
                   return (
                     <div className={`grid ${gameMode === 'last-citizen-standing' ? 'grid-cols-3' :
-                      gameMode === 'chaotic' || gameMode === 'threat-intelligence' ? 'grid-cols-3' :
+                      gameMode === 'chaotic' || gameMode === 'threat-intelligence' || gameMode === 'interlinked' ? 'grid-cols-3' :
                         'grid-cols-4'
                       } gap-1 text-center`}>
                       {availableTraits.map(({ label, value: traitKey, key }) => {
                         const value = traits[traitKey as keyof CitizenTraits]
+
+                        let displayValue: string | number = value
+                        if (gameMode === 'interlinked' && currentScores && originalScores) {
+                          const current = (currentScores as any)[traitKey]
+                          const original = (originalScores as any)[traitKey]
+
+                          // Only show score if it is damaged (less than original)
+                          if (typeof current === 'number' && typeof original === 'number' && current < original) {
+                            displayValue = `${value} (${current})`
+                          }
+                        }
+
                         return (
                           <div key={label} className="bg-gray-800/70 border border-[#0055aa]/40 rounded p-1 h-[45px] flex flex-col justify-center opacity-90 transition-all">
                             <div className="text-[#0090ff] font-semibold leading-tight text-[8px] tracking-tighter uppercase">{label}</div>
-                            <div className={`text-[12px] font-bold leading-tight overflow-hidden text-ellipsis line-clamp-2 ${isUltraRareTrait(key, value) ? 'text-yellow-400' : isRareTrait(key, value) ? 'text-purple-300' : 'text-white/90'}`}>
-                              {value}
+                            <div className={`text-[11px] font-bold leading-tight overflow-hidden text-ellipsis line-clamp-2 ${isUltraRareTrait(key, value) ? 'text-yellow-400' : isRareTrait(key, value) ? 'text-purple-300' : 'text-white/90'}`}>
+                              {displayValue}
                             </div>
                           </div>
                         )
