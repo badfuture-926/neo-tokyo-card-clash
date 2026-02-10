@@ -3530,7 +3530,7 @@ function App() {
                       ) : (
                         <>
                           <div className="text-3xl font-black text-white leading-none tracking-tighter">CHOOSE<br /><span className="text-red-500">TARGET</span></div>
-                          <div className="text-[10px] font-bold mt-3 text-red-300/60 leading-tight">Identify the hostile citizen to rain down fire upon</div>
+                          <div className="text-[10px] font-bold mt-3 text-red-300/60 leading-tight">Identify the hostile citizen to rain down fire upon (-50%)</div>
                         </>
                       )}
                     </div>
@@ -3625,7 +3625,7 @@ function App() {
             {/* Overlays: Absolute within Grid Container */}
             {battleLog && (
               <div className="fixed inset-0 z-[160] flex items-center justify-center bg-black/95 animate-in fade-in duration-300" onClick={handleReportClose}>
-                <div className="relative w-full max-w-7xl mx-4 bg-[#050505] border border-white/10 rounded-[2rem] shadow-2xl p-10 flex flex-col items-center max-h-[90vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+                <div className="relative w-full max-w-7xl mx-4 bg-[#050505] border border-white/10 rounded-[2rem] shadow-2xl p-10 flex flex-col items-center max-h-[90vh]" onClick={e => e.stopPropagation()}>
 
                   {/* Header */}
                   <div className="text-center mb-6 shrink-0">
@@ -3634,7 +3634,7 @@ function App() {
                   </div>
 
                   {/* Main Content Info */}
-                  <div className="flex flex-col md:flex-row items-center justify-center w-full gap-8 md:gap-16 grow overflow-hidden">
+                  <div className="flex flex-col md:flex-row items-center justify-center w-full gap-8 md:gap-16 grow min-h-0 overflow-hidden">
 
                     {/* LEFT SIDE: Player Card */}
                     <div className="hidden md:flex flex-col items-center shrink-0">
@@ -3652,7 +3652,7 @@ function App() {
                     </div>
 
                     {/* CENTER: Battle Log Grid */}
-                    <div className="flex-1 w-full max-w-3xl overflow-y-auto pr-2 custom-scrollbar pb-24">
+                    <div className="flex-1 w-full max-w-3xl overflow-y-auto pr-2 custom-scrollbar pb-4 min-h-0">
                       {/* Grid Header */}
                       <div className="grid grid-cols-5 gap-4 text-[9px] uppercase tracking-widest font-bold text-white/30 border-b border-white/10 pb-2 mb-2 sticky top-0 bg-[#050505] z-10">
                         <div className="text-right text-[#0090ff]">Trait</div>
